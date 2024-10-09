@@ -1,0 +1,99 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container" style="display: flex;">
+        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
+            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
+            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+            <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
+            <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
+            <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
+
+            {% if user.is_superuser %}
+        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
+
+            {% endif %}
+        </div>
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+        <h2 class="text-center mt-4">Finance Management Overview</h2>
+
+        <!-- Online Payroll Statement Section -->
+        <div class="mt-4">
+            <h4>Online Payroll Statement System (UserPay)</h4>
+            <p>
+                Employees can directly access and print their payslips without the need for individual distribution through the <strong>Online Payroll Statement System</strong> (UserPay). The system is completely paperless and allows employees to view all payroll details online from the date of employment.
+            </p>
+            <ul>
+                <li>Access payroll details and payslips anytime, anywhere.</li>
+                <li>Verify the basis for salary calculations through detailed pay type breakdowns.</li>
+                <li>Free of charge without any additional fees for employees and employers.</li>
+            </ul>
+            <p>
+                In addition, UserPay integrates attendance records, allowing employees to apply for leaves, overtime, and check their approval status. Employees can also view their annual leave usage and balance.
+            </p>
+            <p>ECOUNT's Online Payroll Statement System is a robust, web-based platform that simplifies payroll management.</p>
+        </div>
+
+        <!-- Button to request payroll statement -->
+        <button class="btn btn-warning btn-lg mt-3" onclick="confirmRequest()">Request Payroll Statement</button>
+
+        <!-- Request List -->
+        <ul id="request-list" class="list-group mt-3">
+            <!-- Existing requests will be dynamically added here -->
+        </ul>
+    </main>
+</div>
+
+<script>
+    function confirmRequest() {
+        if (confirm("Do you want to submit this payroll statement request?")) {
+            // Set the item name directly
+            const itemName = "Payroll Statement";  // Automatic item name for payroll
+
+            console.log("Item Name:", itemName); // Log the item name for debugging
+
+            // Send an AJAX request to save the request
+            fetch("{% url 'submit_request' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',  // Ensure CSRF token is included
+                },
+                body: JSON.stringify({ item: itemName })  // Send the actual item data
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response Data:", data); // Log the response data for debugging
+                if (data.status === 'success') {
+                    alert("Request submitted successfully!");
+                    // Dynamically add the new request to the list
+                    const requestList = document.getElementById('request-list');
+                    const newRequestItem = document.createElement('li');
+                    newRequestItem.textContent = `${data.date} - ${data.item}`;  // Show the date and item name
+                    newRequestItem.className = 'list-group-item'; // Add Bootstrap list group item class
+                    newRequestItem.style.backgroundColor = '#f8f9fa'; // Add some styling
+                    newRequestItem.style.padding = '10px';
+                    newRequestItem.style.borderRadius = '4px';
+                    requestList.appendChild(newRequestItem);
+                } else {
+                    alert("Failed to submit request.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while submitting the request.");
+            });
+        }
+    }
+</script>
+
+{% endblock %}
+

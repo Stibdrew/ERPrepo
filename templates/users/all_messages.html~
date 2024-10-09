@@ -1,0 +1,21 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>All Messages</h2>
+    {% if messages %}
+        <ul class="list-group">
+            {% for message in messages %}
+            <li class="list-group-item">
+                <strong>Sent by:</strong> {{ message.user.username }}<br>
+                <strong>Message:</strong> {{ message.content }}<br>
+                <strong>Sent on:</strong> {{ message.created_at|date:"M d, Y, H:i" }}<br>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No messages found.</p>
+    {% endif %}
+</div>
+{% endblock %}  

@@ -1,0 +1,102 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container" style="display: flex;">
+        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
+            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
+            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+            <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
+            <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
+            <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
+
+            {% if user.is_superuser %}
+        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
+
+            {% endif %}
+        </div>
+
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+        <h2 class="text-center mt-4">Sales Management Report</h2>
+        <div class="mt-4">
+            <h4>Sales Overview</h4>
+            <p>Manage and track your sales efficiently. The system automatically generates sales reports and reflects changes in accounts receivable and inventory levels in real-time.</p>
+            <ul>
+                <li>Real-time sales updates</li>
+                <li>Automatic sales report generation</li>
+                <li>Track accounts receivable and inventory changes based on sales transactions.</li>
+            </ul>
+            <p>ECOUNT's web-based system allows you to manage sales records from any device, anywhere.</p>
+        </div>
+
+        <div class="mt-4">
+            <h4>Customizable Sales Reporting</h4>
+            <p>Customize your sales reports by adding relevant fields and personalizing templates to fit your business needs. Set up notifications based on sales performance and account statuses.</p>
+            <ul>
+                <li>Add customized fields to the sales report</li>
+                <li>Receive real-time notifications on sales performance</li>
+                <li>Share reports and sales data with team members efficiently.</li>
+            </ul>
+
+            <!-- Button to request item -->
+            <button class="btn btn-warning btn-lg mt-3" onclick="confirmRequest()">Request Sales Report</button>
+
+            <!-- Request List -->
+            <ul id="request-list" class="list-group mt-3">
+                <!-- Existing requests will be dynamically added here -->
+            </ul>
+        </div>
+    </main>
+</div>
+
+<script>
+    function confirmRequest() {
+        if (confirm("Do you want to submit this sales report request?")) {
+            // Set the item name directly
+            const itemName = "Sales Report";  // Automatic item name for sales
+
+            console.log("Item Name:", itemName); // Log the item name for debugging
+
+            // Send an AJAX request to save the request
+            fetch("{% url 'submit_request' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',  // Ensure CSRF token is included
+                },
+                body: JSON.stringify({ item: itemName })  // Send the actual item data
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response Data:", data); // Log the response data for debugging
+                if (data.status === 'success') {
+                    alert("Request submitted successfully!");
+                    // Dynamically add the new request to the list
+                    const requestList = document.getElementById('request-list');
+                    const newRequestItem = document.createElement('li');
+                    newRequestItem.textContent = `${data.date} - ${data.item}`;  // Show the date and item name
+                    newRequestItem.className = 'list-group-item'; // Add Bootstrap list group item class
+                    newRequestItem.style.backgroundColor = '#f8f9fa'; // Add some styling
+                    newRequestItem.style.padding = '10px';
+                    newRequestItem.style.borderRadius = '4px';
+                    requestList.appendChild(newRequestItem);
+                } else {
+                    alert("Failed to submit request.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while submitting the request.");
+            });
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends 'users/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container" style="display: flex;">
+        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
+            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
+            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+            <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
+            <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
+            <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
+
+            {% if user.is_superuser %}
+        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
+
+            {% endif %}
+        </div>
+    <!-- Main Content -->
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+        <h2 class="text-center mt-4">Finance Module Overview</h2>
+        <div class="mt-4">
+            <p>Our Finance module helps you manage your budgets, track expenditures, and generate financial reports with ease. It includes features such as:</p>
+            <ul>
+                <li><strong>Expense Tracking:</strong> Keep detailed records of all your expenses, categorize them, and identify trends over time.</li>
+                <li><strong>Budget Management:</strong> Set and manage budgets for different departments or projects, ensuring that spending stays within limits.</li>
+                <li><strong>Financial Forecasting:</strong> Use historical data to predict future revenue and expenses, enabling informed strategic planning.</li>
+                <li><strong>Real-Time Analytics:</strong> Access live dashboards that provide insights into your financial performance at any given moment.</li>
+                <li><strong>Customizable Reports:</strong> Generate tailored financial reports that highlight the metrics most important to your organization.</li>
+                <li><strong>Integration with Other Modules:</strong> Seamlessly connect finance with inventory, sales, and HR modules for a holistic view of your operations.</li>
+                <li><strong>Automated Notifications:</strong> Set alerts for budget thresholds, overdue payments, and financial anomalies, allowing for proactive management.</li>
+            </ul>
+            <p>With our Finance module, you will not only streamline your financial processes but also gain valuable insights that drive business growth and operational efficiency.</p>
+        </div>
+
+        <div class="mt-4">
+            <h4>Request Financial Report</h4>
+            <p>Submit a request to generate a detailed financial report that can help you analyze your financial position effectively. This report will include:</p>
+            <ul>
+                <li>Summary of expenditures versus budget</li>
+                <li>Trends in revenue generation over time</li>
+                <li>Detailed breakdown of costs by category</li>
+                <li>Recommendations for cost savings and budget adjustments</li>
+            </ul>
+            <p>Having access to this information will empower you to make data-driven decisions that enhance your financial health.</p>
+
+            <!-- Button to request financial report -->
+            <button class="btn btn-warning btn-lg mt-3" onclick="confirmFinanceRequest()">Request Financial Report</button>
+
+            <!-- Request List -->
+            <ul id="request-list" class="list-group mt-3">
+                <!-- Existing requests will be dynamically added here -->
+            </ul>
+        </div>
+    </main>
+</div>
+
+<script>
+    function confirmFinanceRequest() {
+        if (confirm("Do you want to submit this financial report request?")) {
+            // Set the item name directly
+            const itemName = "Financial Report";  // Automatic item name for finance
+
+            console.log("Item Name:", itemName); // Log the item name for debugging
+
+            // Send an AJAX request to save the request
+            fetch("{% url 'submit_request' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',  // Ensure CSRF token is included
+                },
+                body: JSON.stringify({ item: itemName })  // Send the actual item data
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log("Response Data:", data); // Log the response data for debugging
+                if (data.status === 'success') {
+                    alert("Request submitted successfully!");
+                    // Dynamically add the new request to the list
+                    const requestList = document.getElementById('request-list');
+                    const newRequestItem = document.createElement('li');
+                    newRequestItem.textContent = `${data.date} - ${data.item}`;  // Show the date and item name
+                    newRequestItem.className = 'list-group-item'; // Add Bootstrap list group item class
+                    newRequestItem.style.backgroundColor = '#f8f9fa'; // Add some styling
+                    newRequestItem.style.padding = '10px';
+                    newRequestItem.style.borderRadius = '4px';
+                    requestList.appendChild(newRequestItem);
+                } else {
+                    alert("Failed to submit request.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("An error occurred while submitting the request.");
+            });
+        }
+    }
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,37 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+ <div class="container" style="display: flex;">
+    <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
+        <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
+        <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+        <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
+        <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
+        <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
+
+
+        <!-- Link to the messages list -->
+
+        {% if user.is_superuser %}
+        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
+         <a class="nav-link active cool-font" aria-current="page" href="{% url 'all_messages' %}">All Messages</a>
+
+        {% endif %}
+    </div>
+
+    <h2>Contact Us</h2>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="content" class="form-label">{{ form.content.label }}</label>
+            {{ form.content }}  <!-- No need for additional classes here -->
+            <div class="invalid-feedback">
+                Please enter your message.
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+</div>
+{% endblock %}
