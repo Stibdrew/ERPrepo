@@ -1,26 +1,26 @@
 {% extends 'users/base.html' %}
 {% load static %}
+
 {% block content %}
-    
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  <!-- Include Bootstrap -->
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  <!-- Include Bootstrap -->
 
-    <!-- Top Navigation Bar -->
-    <div class="top-nav" style="background-color: white; padding: 10px; border-bottom: 1px solid #ddd;">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 40px;">
+<!-- Top Navigation Bar -->
+<div class="top-nav" style="background-color: white; padding: 10px; border-bottom: 1px solid #ddd;">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+        <img src="{% static 'images/logo.png' %}" alt="Logo" style="height: 40px;">
 
-            <div>
-                <a href="{% url 'contact' %}" class="btn" style="background-color: #d9534f; color: white; margin-right: 10px;">Contact Us</a>
-                <a href="{% url 'messages_user' %}" class="btn" style="background-color: #5cb85c; color: white;">Messages</a>
-                <a href="{% url 'homepage' %}" class="btn" style="background-color: #f0ad4e; color: white; margin-right: 10px;">Invoice</a>
-                <a href="{% url 'homepage' %}" class="btn" style="background-color: #5cb85c; color: white;">Credit Memo</a>
-            </div>
+        <div>
+            <a href="{% url 'contact' %}" class="btn" style="background-color: #d9534f; color: white; margin-right: 10px;">Contact Us</a>
+            <a href="{% url 'messages_user' %}" class="btn" style="background-color: #5cb85c; color: white;">Messages</a>
+            <a href="{% url 'homepage' %}" class="btn" style="background-color: #f0ad4e; color: white; margin-right: 10px;">Invoice</a>
+            <a href="{% url 'homepage' %}" class="btn" style="background-color: #5cb85c; color: white;">Credit Memo</a>
         </div>
     </div>
+</div>
 
-    <!-- Side Navigation Bar -->
- <div class="container" style="display: flex;">
+<!-- Side Navigation Bar -->
+<div class="container" style="display: flex;">
     <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
         <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
         <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
@@ -28,54 +28,47 @@
         <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
         <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
 
-
         <!-- Link to the messages list -->
-
         {% if user.is_superuser %}
         <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-         <a class="nav-link active cool-font" aria-current="page" href="{% url 'all_messages' %}">All Messages</a>
-
+        <a class="nav-link active cool-font" aria-current="page" href="{% url 'all_messages' %}">All Messages</a>
         {% endif %}
     </div>
 
+    <!-- Main Content Area -->
+    <div class="main-content" style="width: 80%; padding: 50px;">
+        <h1 style="font-size: 3em; font-weight: bold;">Complete Web-based ERP</h1>
+        <h2 style="font-size: 2em; margin-top: 10px;">Experience Everything</h2>
+        <p style="font-size: 1.2em; margin-top: 20px;">Our web-based ERP solution offers comprehensive tools for Inventory, Production, Sales, Purchasing, Accounting, Payroll, and Collaboration. Join thousands of businesses who trust us to streamline their operations and boost productivity.</p>
 
+        <h2>My Requests</h2>
+        <ul class="list-group mb-3"> <!-- Use Bootstrap list group -->
+            {% for request in requests %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong class="mr-3">{{ request.item }}</strong>
+                        <span class="text-muted mr-3">{{ request.created_at|date:"Y-m-d H:i:s" }}</span>
 
-  <div class="main-content" style="width: 80%; padding: 50px;">
-            <h1 style="font-size: 3em; font-weight: bold;">Complete Web-based ERP</h1>
-            <h2 style="font-size: 2em; margin-top: 10px;">Experience Everything</h2>
-            <p style="font-size: 1.2em; margin-top: 20px;">Our web-based ERP solution offers comprehensive tools for Inventory, Production, Sales, Purchasing, Accounting, Payroll, and Collaboration. Join thousands of businesses who trust us to streamline their operations and boost productivity.</p>
-    
-<h2>My Requests</h2>
-<ul class="list-group mb-3"> <!-- Use Bootstrap list group -->
-    {% for request in requests %}
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div>
-                <strong class="mr-3">{{ request.item }}</strong>
-                <span class="text-muted mr-3">{{ request.created_at|date:"Y-m-d H:i:s" }}</span>
+                        {% if request.status == "pending" %}
+                            <span class="badge badge-warning">{{ request.status }}</span>  <!-- Display status as yellow for pending -->
+                        {% elif request.status == "approved" %}
+                            <span class="badge badge-success">{{ request.status }}</span>  <!-- Display status as green for approved -->
+                        {% elif request.status == "declined" %}
+                            <span class="badge badge-danger">{{ request.status }}</span>  <!-- Display status as red for declined -->
+                        {% endif %}
+                    </div>
 
-                {% if request.status == "pending" %}
-                    <span class="badge badge-warning">{{ request.status }}</span>  <!-- Display status as yellow for pending -->
-                {% elif request.status == "approved" %}
-                    <span class="badge badge-success">{{ request.status }}</span>  <!-- Display status as green for approved -->
-                {% elif request.status == "declined" %}
-                    <span class="badge badge-danger">{{ request.status }}</span>  <!-- Display status as red for declined -->
-                {% endif %}
-
-            </div>
-
-        </li>
-    {% empty %}
-        <li class="list-group-item">No requests submitted.</li>
-    {% endfor %}
-</ul>
-<p><strong>Request count:</strong> {{ requests.count }}</p> <!-- This line will help you check if requests are being passed -->
-
-        </div>
+                    <!-- Add a form to delete the request -->
+                    <form method="POST" action="{% url 'delete_request' request.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>  <!-- Delete button -->
+                    </form>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No requests submitted.</li>
+            {% endfor %}
+        </ul>
+        <p><strong>Request count:</strong> {{ requests.count }}</p> <!-- This line will help you check if requests are being passed -->
     </div>
 </div>
-
-
-        <!-- Main Content Area -->
-
-
-{% endblock content %}
+{% endblock %}

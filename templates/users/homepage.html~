@@ -27,7 +27,6 @@
         <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
         <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
         <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
-        <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
 
 
         <!-- Link to the messages list -->
