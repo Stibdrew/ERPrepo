@@ -4,13 +4,6 @@ from .views import homepage_view
 from .views import delete_request
 from django.urls import path
 from .views import approve_request, decline_request
-
-
-
-
-
-
-
 urlpatterns = [
     # ... other URL patterns ...
     path('submit_request/', submit_request, name='submit_request'),

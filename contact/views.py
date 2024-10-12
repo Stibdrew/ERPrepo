@@ -1,28 +1,33 @@
-from .forms import ContactForm
+from .forms import ContactForm, ReplyForm
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Message
-from .forms import ReplyForm
-from django.shortcuts import render
 from .models import Message, Reply  # Make sure to import the Reply model
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404
+from .models import Message
+
+
+@login_required
+def delete_message(request, message_id):
+    message = get_object_or_404(Message, id=message_id)
+
+    if message.user == request.user:  # Ensure the user can only delete their own messages
+        message.delete()
+
+    return redirect('all_messages')  # Redirect to the messages list after deletion
+
 
 @login_required
 def my_replies(request):
-    # Get messages sent by the logged-in user
-    messages = Message.objects.filter(user=request.user)
-
-    # Fetch replies for each message
-    message_replies = {}
-    for message in messages:
-        message_replies[message] = Reply.objects.filter(message=message)  # Get replies for each message
+    # Get messages sent by the logged-in user and fetch replies
+    messages = Message.objects.filter(user=request.user).order_by('-created_at')  # Order by created_at
+    message_replies = {message: Reply.objects.filter(message=message).order_by('-created_at') for message in messages}
 
     return render(request, 'users/replies.html', {'message_replies': message_replies})
 
-
-
 @login_required
 def all_messages(request):
-    messages = Message.objects.all()  # Get all messages
+    messages = Message.objects.all().order_by('-created_at')  # Get all messages ordered by created_at
     reply_form = ReplyForm()  # Initialize an empty reply form
     return render(request, 'users/all_messages.html', {'messages': messages, 'reply_form': reply_form})
 
@@ -40,10 +45,10 @@ def add_reply(request, message_id):
 
     return redirect('all_messages')  # Redirect if the form is invalid or GET request
 
-@login_required  # Ensure that only logged-in users can access this view
+@login_required
 def messages_user(request):
     # Retrieve messages sent by the logged-in user
-    messages = Message.objects.filter(user=request.user)
+    messages = Message.objects.filter(user=request.user).order_by('-created_at')  # Order by created_at
     return render(request, 'users/messages.html', {'messages': messages})
 
 def contact_us(request):
@@ -60,6 +65,3 @@ def contact_us(request):
 
 def success_view(request):
     return render(request, 'users/success.html')  # Optional, can be removed
-
-def reply(request):
-    return render(request, 'users/replies.html')  # Opt

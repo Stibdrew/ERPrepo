@@ -11,10 +11,7 @@ urlpatterns = [
 
     path('homepage/', views.homepage, name='homepage'), # Home page
     path('inventory/', views.inventory, name='inventory'), # Profile page
-    path('sales/', views.sales, name='sales'), # Profile page
 
-    path('finance/', views.finance, name='finance'), # Profile page
-    path('HR/', views.HR, name='HR'), # Profile page
 
 
 

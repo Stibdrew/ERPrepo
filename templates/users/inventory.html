@@ -6,9 +6,7 @@
         <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
             <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
             <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
-            <a href="{% url 'sales' %}" style="display: block; color: white; margin-bottom: 15px;">Sales</a>
-            <a href="{% url 'finance' %}" style="display: block; color: white; margin-bottom: 15px;">Finance</a>
-            <a href="{% url 'HR' %}" style="display: block; color: white; margin-bottom: 15px;">HR</a>
+
 
             {% if user.is_superuser %}
         <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
@@ -54,7 +52,6 @@
 <script>
     function confirmRequest() {
         if (confirm("Do you want to submit this request?")) {
-            // Set the item name directly
             const itemName = "Inventory";  // Automatic item name
 
             console.log("Item Name:", itemName); // Log the item name for debugging
@@ -72,7 +69,6 @@
                 if (!response.ok) {
                     throw new Error("Network response was not ok");
                 }
-
                 return response.json();
             })
             .then(data => {
@@ -88,16 +84,20 @@
                     newRequestItem.style.padding = '10px';
                     newRequestItem.style.borderRadius = '4px';
                     requestList.appendChild(newRequestItem);
+                } else if (data.status === 'error') {
+                    alert(data.message);  // Show the error message
                 } else {
                     alert("Failed to submit request.");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert("An error occurred while submitting the request.");
+                alert("An error occurred. Please try again.");
             });
         }
     }
 </script>
+
+
 
 {% endblock %}

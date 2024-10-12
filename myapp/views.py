@@ -46,12 +46,4 @@ def profile(request):
 def inventory(request):
     return render(request, 'users/inventory.html')
 
-def sales(request):
-    return render(request, 'users/sales.html')
-
-def finance(request):
-    return render(request, 'users/finance.html')
-
-def HR(request):
-    return render(request, 'users/HR.html')
 
