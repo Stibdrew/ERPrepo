@@ -1,0 +1,57 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>All Product Requests</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Product</th>
+                <th>Quantity Requested</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requested_products %}
+                <tr>
+                    <td>{{ request.user.username }}</td>
+                    <td>{{ request.product.name }}</td>
+                    <td>{{ request.quantity_requested }}</td>
+                    <td>
+                        {% if request.status == 'pending' %}
+                            <span class="badge bg-warning">{{ request.status }}</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ request.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if request.status == 'pending' %}
+                            <form action="{% url 'approve_request' request.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                            </form>
+                            <form action="{% url 'decline_request' request.id %}" method="POST" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+                            </form>
+                        {% endif %}
+                        <!-- Delete button for all statuses -->
+                        <form action="{% url 'delete_product_request' request.id %}" method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-sm" onclick="return confirm('Are you sure you want to delete this request?');">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No product requests available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

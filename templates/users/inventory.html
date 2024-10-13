@@ -57,7 +57,7 @@
             console.log("Item Name:", itemName); // Log the item name for debugging
 
             // Send an AJAX request to save the request
-            fetch("{% url 'submit_request' %}", {
+            fetch("{% url 'submit_inventory_request' %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

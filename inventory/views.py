@@ -1,77 +1,61 @@
-from django.http import JsonResponse
-from .models import Request
-from django.views.decorators.csrf import csrf_exempt
 import json
 from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse
+from .models import InventoryAccessRequest
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 import logging
 from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Request
-
-
-@login_required
-def approve_request(request, request_id):
-    logger.info(f"Approving request with ID: {request_id}")  # Log the request ID
-    try:
-        req = Request.objects.get(id=request_id, status='pending')
-        req.status = 'approved'
-        req.save()
-        return JsonResponse({'status': 'success', 'message': 'Request approved successfully!'})
-    except Request.DoesNotExist:
-        logger.error(f"Request with ID {request_id} not found.")
-        return JsonResponse({'status': 'error', 'message': 'Request not found.'})
-
-@login_required
-def decline_request(request, request_id):
-    req = get_object_or_404(Request, id=request_id)
-    req.status = 'declined'  # Set the status to declined
-    req.save()
-    return redirect('homepage')  # Redirect after declining
-
-
-# Set up logging
+from .models import InventoryAccessRequest  # Replace with your actual mode
 logger = logging.getLogger(__name__)
 
-@login_required
-def delete_request(request, request_id):
-    # Get the request object or return a 404 if it doesn't exist
-    user_request = get_object_or_404(Request, id=request_id)
 
-    # Allow deletion if the user is a superuser
+
+def approve_inventory_request(request, id):  # Make sure 'id' is included here
+    request_obj = get_object_or_404(InventoryAccessRequest, id=id)
+    # Logic to approve the request
+    request_obj.status = 'inventory_approved'  # Or whatever logic you need
+    request_obj.save()
+    return redirect('admin_page')  # Redirect to your desired page
+
+
+@login_required
+def decline_inventory_request(request, id):  # Change 'request_id' to 'id'
+    """Decline an inventory access request."""
+    request_obj = get_object_or_404(InventoryAccessRequest, id=id)  # Use 'id' here
+    request_obj.status = 'inventory_declined'  # Set the status to declined
+    request_obj.save()
+    messages.success(request, "Inventory request declined successfully!")  # Optional message
+    return redirect('admin_page')  # Redirect to the admin page
+
+
+
+@login_required
+def delete_inventory_request(request, request_id):
+    """Delete an inventory access request."""
+    user_request = get_object_or_404(InventoryAccessRequest, id=request_id)
     if request.user.is_superuser:
-        user_request.delete()  # Delete the request
-
-    return redirect('admin_page')  # Redirect to a relevant page after deletio
-
-logger = logging.getLogger(__name__)
-
-import json
-import logging
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
-from .models import Request  # Ensure your Request model is imported
-
-# Set up logging
-logger = logging.getLogger(__name__)
+        user_request.delete()
+        logger.info(f"Request with ID {request_id} deleted by superuser {request.user.username}.")
+        messages.success(request, "Inventory request deleted successfully!")
+    else:
+        messages.error(request, "You do not have permission to delete this request.")
+    return redirect('admin_page')
 
 @login_required
-def submit_request(request):
+def submit_inventory_request(request):
+    """Submit a new inventory access request."""
     if request.method == 'POST':
         try:
-            # Parse JSON data
             data = json.loads(request.body)
             item = data.get('item')
 
             # Check if the user already has a pending or approved request
-            existing_request_approved = Request.objects.filter(user=request.user, status='approved').exists()
-            existing_request_pending = Request.objects.filter(user=request.user, status='pending').exists()
-
-            if existing_request_approved or existing_request_pending:
+            if InventoryAccessRequest.objects.filter(user=request.user, status__in=['inventory_approved', 'inventory_pending']).exists():
                 return JsonResponse({'status': 'error', 'message': 'You already have a pending or approved request.'})
 
             # Create a new request
-            new_request = Request(user=request.user, item=item)
+            new_request = InventoryAccessRequest(user=request.user, item=item)
             new_request.save()
 
             return JsonResponse({
@@ -82,26 +66,25 @@ def submit_request(request):
         except json.JSONDecodeError:
             return JsonResponse({'status': 'error', 'message': 'Invalid JSON data.'})
         except Exception as e:
-            logger.error(f"Error in submit_request: {str(e)}")
+            logger.error(f"Error in submit_inventory_request: {str(e)}")
             return JsonResponse({'status': 'error', 'message': 'An error occurred.'})
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
 
+@login_required
+def requested_inventory(request):
+    """Display the requested inventory."""
+    return render(request, 'inventory/requested_inventory.html')
 
 @login_required
 def homepage_view(request):
-    # Get requests made by the authenticated user
-    user_requests = Request.objects.filter(user=request.user)
-    logger.info(f"User requests: {user_requests}")  # Log requests
+    """Display the homepage with user requests."""
+    user_requests = InventoryAccessRequest.objects.filter(user=request.user)
+    logger.info(f"User requests: {user_requests}")
 
-    # Count approved requests
-    approved_requests_count = user_requests.filter(status='approved').count()
+    approved_requests_count = user_requests.filter(status='inventory_approved').count()
 
     return render(request, 'users/homepage.html', {
         'requests': user_requests,
         'approved_requests_count': approved_requests_count,
     })
-
-@login_required
-def requested_inventory(request):
-    return render(request, 'inventory/requested_inventory.html')

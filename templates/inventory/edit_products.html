@@ -12,7 +12,7 @@
                 <th>SKU</th>
                 <th>Price (in $)</th>
                 <th>Available Quantity</th>
-                <th>Request Quantity and Action</th>
+                <th>Action</th> <!-- Updated column header -->
                 <th>Total Cost</th> <!-- New column for total cost -->
             </tr>
         </thead>
@@ -24,13 +24,9 @@
                 <td>${{ product.price|floatformat:2 }}</td> <!-- Format price to 2 decimal places -->
                 <td>{{ product.quantity }}</td>
                 <td>
-                    <form method="POST" action="{% url 'add_product_request' %}">
+                    <form method="POST" action="{% url 'delete_product' product.id %}"> <!-- Change action to delete_product URL -->
                         {% csrf_token %}
-                        <input type="hidden" name="product_name" value="{{ product.id }}">
-                        <div class="input-group">
-                            <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required>
-                            <button type="submit" class="btn btn-primary">Request</button>
-                        </div>
+                        <button type="submit" class="btn btn-danger">Delete</button> <!-- Delete button -->
                     </form>
                 </td>
                 <td>
