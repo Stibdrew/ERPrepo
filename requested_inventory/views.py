@@ -7,6 +7,12 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from .models import Product  # Adjust the import based on your app structure
 from django.http import HttpResponseBadRequest
+
+def cancel_request(request, pk):
+    request_obj = ProductRequest.objects.get(pk=pk)
+    request_obj.delete()
+    messages.success(request, 'Request cancelled successfully.')
+    return redirect('view_requested_products')
 def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product.delete()
