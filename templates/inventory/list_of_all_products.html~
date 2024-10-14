@@ -1,0 +1,41 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>All Products</h2>
+
+    <!-- Product List -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>SKU</th>
+                <th>Price (in $)</th>
+                <th>Available Quantity</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.sku }}</td>
+                <td>${{ product.price|floatformat:2 }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>
+                    <form method="POST" action="{% url 'delete_product' product.id %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <a href="{% url 'edit_product' product.id %}" class="btn btn-primary">Edit</a>  <!-- Edit button -->
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center">No products available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

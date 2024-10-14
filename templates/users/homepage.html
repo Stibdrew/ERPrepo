@@ -14,13 +14,13 @@
 
 
 
+
         <!-- Links to admin functionalities -->
         {% if user.is_superuser %}
         <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
         <a class="nav-link active cool-font" aria-current="page" href="{% url 'all_messages' %}">All Messages</a>
             <a href="{% url 'add_product' %}" style="display: block; color: white; margin-bottom: 15px;">Add Product</a>
-            <a href="{% url 'edit_product' %}" style="display: block; color: white; margin-bottom: 15px;">Edit Product</a>
-<a href="{% url 'all_products_request' %}" style="display: block; color: white; margin-bottom: 15px;">All Product Request View</a>
+            <a href="{% url 'all_product_requests' %}" style="display: block; color: white; margin-bottom: 15px;">All Product Requests</a>
         {% endif %}
     </div>
 
