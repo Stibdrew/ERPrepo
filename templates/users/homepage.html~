@@ -1,0 +1,323 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        margin: 0;
+    }
+
+    .sidebar {
+        height: 100vh;
+        background: #1e1e1e; /* Sidebar color */
+        padding: 20px 10px; /* Padding for aesthetics */
+        position: fixed;
+        width: 250px; /* Expanded width */
+        box-shadow: 2px 0 15px rgba(0, 0, 0, 0.5);
+        transition: width 0.3s ease; /* Smooth transition */
+    }
+
+    .sidebar.collapsed {
+        width: 60px; /* Collapsed width */
+    }
+
+    .sidebar h3 {
+        font-weight: bold;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        text-align: center; /* Centered text */
+        color: #ffffff; /* White text */
+        display: block; /* Title shown when expanded */
+    }
+
+    .sidebar.collapsed h3 {
+        display: none; /* Hide the title when collapsed */
+    }
+
+    .sidebar a {
+        color: #bdbdbd;
+        text-decoration: none;
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s, color 0.3s; /* Hover effects */
+        margin: 5px 0;
+        border-radius: 8px; /* Rounded corners */
+        justify-content: flex-start; /* Align items left */
+    }
+
+    .sidebar a i {
+        margin-right: 15px; /* Space for label */
+        font-size: 1.5rem; /* Icon size */
+    }
+
+    .sidebar.collapsed a i {
+        margin-right: 0; /* Remove margin when collapsed */
+    }
+
+    .sidebar a span {
+        display: inline-block; /* Span for text */
+    }
+
+    .sidebar.collapsed a span {
+        display: none; /* Hide text when collapsed */
+    }
+
+    .sidebar a:hover {
+        background-color: #575757; /* Background on hover */
+        color: #ffffff; /* Text color on hover */
+    }
+
+    .main-content {
+        margin-left: 270px; /* Adjusted for sidebar width */
+        padding: 30px;
+        background-color: #121212;
+        transition: margin-left 0.3s ease; /* Smooth transition for content shift */
+    }
+
+    .main-content.shift {
+        margin-left: 70px; /* Adjust for collapsed sidebar */
+    }
+
+    .navbar-custom {
+        background-color: #2d2d2d;
+        padding: 15px 30px;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        margin-bottom: 20px; /* Added margin below navbar for spacing */
+    }
+
+    .navbar-brand {
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 1.8rem; /* Increased font size */
+    }
+
+    .hero-section {
+        background-color: #2d2d2d;
+        padding: 30px; /* Increased padding for more space */
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .hero-section h1 {
+        font-size: 2rem; /* Increased heading size */
+    }
+
+    .hero-section p {
+        color: #bdbdbd;
+        font-size: 1rem; /* Adjust paragraph size */
+    }
+
+    .card {
+        background: #333333;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        padding: 25px;
+        margin-bottom: 30px;
+    }
+
+    .request-status {
+        color: #e67e22;
+        font-weight: bold;
+        background: #e67e2233;
+        border-radius: 15px;
+        padding: 5px 15px;
+    }
+
+    .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 20px;
+        transition: background-color 0.3s;
+    }
+
+    .delete-btn:hover {
+        background-color: #c0392b;
+        transform: scale(1.05);
+    }
+
+    .table {
+        background: #1e1e1e;
+        border-radius: 10px;
+    }
+
+    .table th {
+        background-color: #444444;
+        color: white;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.3s;
+    }
+
+    .table tbody tr:hover {
+        background-color: #575757;
+    }
+
+    .table tbody tr:nth-child(odd) {
+        background-color: #333333;
+    }
+
+    /* Button styles */
+    .btn-messages,
+    .btn-notification {
+        background-color: transparent; /* No background */
+        border: none; /* No border */
+        color: #ffffff; /* White text */
+        padding: 12px 20px; /* Increased padding */
+        font-size: 18px; /* Increased font size */
+        transition: background-color 0.3s;
+        cursor: pointer; /* Pointer cursor */
+    }
+
+    .btn-messages:hover,
+    .btn-notification:hover {
+        background-color: rgba(255, 255, 255, 0.1); /* Light background on hover */
+    }
+
+    .btn-notification {
+        color: #ffeb3b; /* Brighter yellow for visibility */
+        font-size: 20px; /* Increased size */
+    }
+
+    .dropdown-menu {
+        background-color: #333333; /* Match the theme */
+        border-radius: 0; /* Remove border radius for seamless look */
+    }
+
+    .dropdown-item {
+        color: #bdbdbd; /* Item color */
+    }
+
+    .dropdown-item:hover {
+        background-color: #575757; /* Background on hover */
+        color: white; /* Text color on hover */
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 d-md-block sidebar" id="sidebar">
+            <h3 class="text-uppercase font-weight-bold">ERP SYSTEM</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a href="{% url 'inventory' %}"><i class="fas fa-home"></i><span>Home</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'add_product_request' %}"><i class="fas fa-box"></i><span>Inventory</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'view_requested_products' %}"><i class="fas fa-chart-line"></i><span>Sales</span></a>
+                </li>
+                {% if user.is_superuser %}
+                <li class="nav-item">
+                    <a href="{% url 'admin_page' %}"><i class="fas fa-clipboard-list"></i><span>Request Records</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'all_messages' %}"><i class="fas fa-comments"></i><span>All Messages</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'add_product' %}"><i class="fas fa-plus-circle"></i><span>Add Product</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'edit_product' %}"><i class="fas fa-edit"></i><span>Edit Product</span></a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'all_products_request' %}"><i class="fas fa-list"></i><span>All Product Requests</span></a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 main-content" id="mainContent">
+            <nav class="navbar navbar-custom">
+                <button id="toggleSidebar" class="btn btn-secondary" style="margin-right: 10px;">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#">ERP Dashboard</a>
+                <div class="navbar-buttons">
+                    <button class="btn btn-messages">
+                        <i class="fas fa-comments"></i> Messages
+                    </button>
+                    <button class="btn btn-notification" style="margin-left: 10px;">
+                        <i class="fas fa-bell" title="You have new messages!"></i>
+                    </button>
+                    <!-- Removed the user dropdown -->
+                </div>
+            </nav>
+
+            <div class="hero-section">
+                <h1>COMPLETE WEB-BASED ERP</h1>
+                <p>Experience Everything</p>
+                <p>Our web-based ERP solution offers comprehensive tools for Inventory, Production, Sales, Purchasing, Accounting, Payroll, and Collaboration. Join thousands of businesses who trust us to streamline their operations and boost productivity.</p>
+            </div>
+
+            <div class="card">
+                <h3>My Requests</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Financial Report</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-10-09 02:39:33</td>
+                                <td><span class="request-status">Pending</span></td>
+                                <td>
+                                    <button class="btn delete-btn" onclick="deleteProduct(this)">Delete</button>
+                                </td>
+                            </tr>
+                            <!-- Additional product rows can be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                <p>Request count: 1</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Toggle sidebar visibility
+    document.getElementById('toggleSidebar').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebar');
+        var mainContent = document.getElementById('mainContent');
+
+        sidebar.classList.toggle('collapsed'); // Toggle collapsed state
+        mainContent.classList.toggle('shift'); // Shift main content when collapsed
+    });
+
+    function deleteProduct(button) {
+        // Confirmation before deletion
+        if (confirm("Are you sure you want to delete this product?")) {
+            // Remove the row from the table
+            var row = button.closest('tr');
+            row.parentNode.removeChild(row);
+            alert("Product deleted successfully.");
+        }
+    }
+</script>
+
+{% endblock %}
