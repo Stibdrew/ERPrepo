@@ -28,6 +28,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']  # Add localhost for development
 
 # Application definition
 INSTALLED_APPS = [
+    'checkout',
     'requested_inventory',
     'contact',
     'administrator',

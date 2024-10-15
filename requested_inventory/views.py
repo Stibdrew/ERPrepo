@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from django.views.decorators.http import require_POST
 from .models import Product  # Adjust the import based on your app structure
+from decimal import Decimal, InvalidOperation  # Make sure InvalidOperation is imported
+
 from django.http import HttpResponseBadRequest
 
 def cancel_request(request, pk):
@@ -28,13 +30,23 @@ def update_product(request, product_id):
         price = request.POST.get('price')
         description = request.POST.get('description')
 
-
         # Check for missing fields
         if not name or not sku or price is None:
-            # Return an error message or redirect back with an error
             return render(request, 'inventory/requested_inventory.html', {
                 'product': product,
                 'error': 'Please fill in all fields.',
+            })
+
+        # Strip whitespace from the price input
+        price = price.strip() if price else ''
+
+        # Validate and convert the price to Decimal
+        try:
+            price = Decimal(price)  # This will raise InvalidOperation if the input is invalid
+        except (InvalidOperation, ValueError):
+            return render(request, 'inventory/requested_inventory.html', {
+                'product': product,
+                'error': 'Invalid price value. Please enter a valid number.',
             })
 
         # Update product details
@@ -43,11 +55,10 @@ def update_product(request, product_id):
         product.price = price
         product.description = description
         product.save()
-        return redirect('requested_inventory')  # or wherever you want to redirect
+
+        return redirect('requested_inventory')  # Adjust to your desired redirect
 
     return render(request, 'inventory/requested_inventory.html', {'product': product})
-
-
 @login_required
 def delete_product_view(request):
     products = Product.objects.all()  # Fetch all products to display
@@ -102,7 +113,7 @@ def approve_request(request, request_id):
     else:
         messages.error(request, "Cannot approve request. Not enough stock available.")
 
-    return redirect('all_product_requests')  # Redirect to the all products page
+    return redirect('homepage')  # Redirect to the all products page
 
 @login_required
 def decline_request(request, request_id):
@@ -110,7 +121,7 @@ def decline_request(request, request_id):
     product_request.status = 'declined'
     product_request.save()
     messages.success(request, "Product request declined successfully!")
-    return redirect('all_product_requests')  # Redirect to the all products page
+    return redirect('all_products_request')  # Redirect to the all products page
 
 @login_required
 def add_product_request(request):
@@ -123,7 +134,7 @@ def add_product_request(request):
             product = Product.objects.get(id=product_id)
         except Product.DoesNotExist:
             messages.error(request, "Product not found.")
-            return redirect('add_product_request')
+            return redirect('requested_inventory')
 
         # Create a new product request
         ProductRequest.objects.create(
@@ -132,12 +143,12 @@ def add_product_request(request):
             quantity_requested=quantity  # Use the correct field name here
         )
 
-        messages.success(request, "Product request submitted successfully.")
-        return redirect('homepage')  # Redirect to a success page or another view
+        messages.success(request, "Product request submitted successfully Please Check Your View Requested Products")
+        return redirect('requested_inventory')  # Redirect to a success page or another view
 
     # Fetch all products to display in the dropdown and existing products
     products = Product.objects.all()  # Fetch all products
-    return render(request, 'inventory/add_product_request.html', {
+    return render(request, 'inventory/requested_inventory.html', {
         'products': products,  # Pass existing products to the template
         'form': ProductForm()   # Pass the form instance to the template
     })

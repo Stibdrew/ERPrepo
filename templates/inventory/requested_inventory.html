@@ -12,12 +12,11 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">SKU: {{ product.sku }}</p>
-                    <p class="card-text">Price: ${{ product.price|floatformat:2 }}</p>
+                    <p class="card-text formatted-price" data-price="{{ product.price }}">Price: ${{ product.price|floatformat:2 }}</p>
                     <p class="card-text">Available Stock: {{ product.quantity }}</p>
                     <p class="card-text">Description: {{ product.description }}</p>
 
                     <!-- Total Cost Display -->
-                    <p class="card-text">Total Cost: <span class="total-cost" id="total-cost-{{ product.id }}">$ {{ product.price|floatformat:2 }}</span></p>
 
                     <form method="POST" action="{% url 'add_product_request' %}" onsubmit="return validateQuantity(this, {{ product.quantity }});">
                         {% csrf_token %}
@@ -35,7 +34,7 @@
                     <form method="POST" action="{% url 'update_stock' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <div class="form-group mb-2">
-                            <span class="ml-2">Stock</span>  <!-- Add an indicator next to the text field -->
+                            <span class="ml-2">Stock</span>
                             <input type="number" name="stock_change" class="form-control" min="-{{ product.quantity }}" value="0" required placeholder="Change Stock">
                         </div>
                         <button type="submit" class="btn btn-secondary btn-sm">Update Stock</button>
@@ -43,20 +42,19 @@
                     <form method="POST" action="{% url 'update_product' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <div class="form-group mb-2">
-                            <span class="ml-2">Name</span>  <!-- Add an indicator next to the text field -->
+                            <span class="ml-2">Name</span>
                             <input type="text" name="name" class="form-control" value="{{ product.name }}" required placeholder="Name">
                         </div>
                         <div class="form-group mb-2">
-                            <span class="ml-2">SKU</span>  <!-- Add an indicator next to the text field -->
+                            <span class="ml-2">SKU</span>
                             <input type="text" name="sku" class="form-control" value="{{ product.sku }}" required placeholder="SKU">
                         </div>
                         <div class="form-group mb-2">
-                            <span class="ml-2">Price</span>  <!-- Add an indicator next to the text field -->
+                            <span class="ml-2">Price</span>
                             <input type="number" name="price" class="form-control" value="{{ product.price }}" min="0.01" step="0.01" required placeholder="Price">
-
                         </div>
                         <div class="form-group mb-2">
-                             <span class="ml-2">Description</span>  <!-- Add an indicator next to the text field -->
+                             <span class="ml-2">Description</span>
                             <input type="text" name="description" class="form-control" value="{{ product.description }}" placeholder="Description" required>
                         </div>
                         <button type="submit" class="btn btn-warning btn-sm">Update</button>
@@ -75,18 +73,31 @@
     </div>
 </div>
 
-<!-- JavaScript to update total cost dynamically -->
+<!-- JavaScript to format numbers and update total cost dynamically -->
 <script>
+    // Function to format numbers with commas
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Format all prices and total costs on the page
+    document.querySelectorAll('.formatted-price, .formatted-total-cost').forEach(element => {
+        const price = parseFloat(element.dataset.price || element.dataset.totalCost);
+        if (!isNaN(price)) {
+            element.innerText = 'Price: $' + formatNumber(price.toFixed(2));
+        }
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.quantity-input').forEach(function (input) {
             input.addEventListener('input', function () {
-                var price = parseFloat(this.getAttribute('data-price')); // Fix: access data-price attribute correctly
+                var price = parseFloat(this.getAttribute('data-price'));
                 var quantity = parseInt(this.value);
-                var totalCostElement = document.getElementById('total-cost-' + this.closest('.card').querySelector('input[name="product_name"]').value);
+                var totalCostElement = document.getElementById('total-cost-' + this.closest('form').querySelector('input[name="product_name"]').value);
 
                 if (!isNaN(price) && !isNaN(quantity) && quantity > 0) {
                     var totalCost = price * quantity;
-                    totalCostElement.textContent = '$ ' + totalCost.toFixed(2);
+                    totalCostElement.textContent = '$ ' + formatNumber(totalCost.toFixed(2));
                 } else {
                     totalCostElement.textContent = '$ 0.00';
                 }
