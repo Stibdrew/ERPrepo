@@ -1,0 +1,54 @@
+{% extends 'users/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Receipt</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <h5 class="card-title">{{ product_request.product.name }}</h5>
+                <p class="card-text"><strong>Order Date:</strong> {{ product_request.created_at|date:"F d, Y H:i" }}</p>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <p class="card-text formatted-price" data-price="{{ product_request.product.price|floatformat:2 }}"><strong>Price:</strong> $<span></span></p>
+                <p class="card-text"><strong>SKU:</strong> {{ product_request.product.sku }}</p>
+                <p class="card-text"><strong>Description:</strong> {{ product_request.product.description }}</p>
+                <p class="card-text"><strong>Quantity Requested:</strong> {{ product_request.quantity_requested }}</p>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <p class="card-text formatted-total-cost" data-total-cost="{{ total_cost|floatformat:2 }}"><strong>Total Cost:</strong> $<span></span></p>
+                <p class="card-text formatted-total-cost" data-total-cost="{{ tax|floatformat:2 }}"><strong>Tax (0.1%):</strong> $<span></span></p>
+                <p class="card-text formatted-total-cost" data-total-cost="{{ shipping_fee|floatformat:2 }}"><strong>Shipping Fee:</strong> $<span></span></p>
+                <p class="card-text formatted-total-cost" data-total-cost="{{ total_with_tax_and_shipping|floatformat:2 }}"><strong>Total Cost with Tax and Shipping:</strong> $<span></span></p>
+            </div>
+            <hr>
+            <h4 class="mt-4">Customer Information</h4>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Mobile Number:</strong> {{ user_profile.mobile_number }}</p>
+            <p><strong>Business Title:</strong> {{ user_profile.business_title }}</p>
+            <hr>
+            <div class="text-center mt-4">
+                <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Format all prices and total costs on the page
+    document.querySelectorAll('.formatted-price, .formatted-total-cost').forEach(element => {
+        const price = parseFloat(element.dataset.price || element.dataset.totalCost);
+        if (!isNaN(price)) {
+            element.querySelector('span').innerText = formatNumber(price.toFixed(2));
+        }
+    });
+</script>
+{% endblock %}

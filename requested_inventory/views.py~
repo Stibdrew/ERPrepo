@@ -63,7 +63,7 @@ def update_product(request, product_id):
 def delete_product_view(request):
     products = Product.objects.all()  # Fetch all products to display
 
-    return render(request, 'inventory/requested_inventory.html', {
+    return render(request, 'inventory/delete_product.html', {
         'products': products
     })
 @login_required

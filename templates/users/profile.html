@@ -7,45 +7,52 @@
             <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
             <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
 
-
             {% if user.is_superuser %}
-        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-
+                <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
             {% endif %}
         </div>
-    
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Profile Information</h2>
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">User Details</h5>
+
+        <div class="container mt-5">
+            <h2 class="text-center mb-4">Profile Information</h2>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">User Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Username:</strong> {{ user.username }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Email:</strong> {{ user.email }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Full Name:</strong> {{ user_profile.full_name }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Company Name:</strong> {{ user_profile.company_name }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Business Title:</strong> {{ user_profile.business_title }}
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="card-body">
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">
-                        <strong>Username:</strong> {{ user.username }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Email:</strong> {{ user.email }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Full Name:</strong> {{ user_profile.full_name }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Company Name:</strong> {{ user_profile.company_name }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong>Business Title:</strong> {{ user_profile.business_title }}
-                    </li>
-                </ul>
+
+            <!-- Edit Profile Form -->
+            <h2 class="text-center mt-4">Edit Profile Information</h2>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}  <!-- Use crispy forms for better styling -->
+                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
             </div>
-        </div>
-        <div class="text-center mt-4">
-           
-            <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
         </div>
     </div>
 {% endblock %}

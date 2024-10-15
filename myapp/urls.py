@@ -11,9 +11,7 @@ urlpatterns = [
 
     path('homepage/', views.homepage, name='homepage'), # Home page
     path('inventory/', views.inventory, name='inventory'), # Profile page
-
-
-
+    path('edit_profile/', views.edit_profile, name='edit_profile'),  # Add this line
 
 ]
 

@@ -9,7 +9,7 @@
     <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
         <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
         <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
-        <a href="{% url 'view_requested_products' %}" style="display: block; color: white; margin-bottom: 15px;">Request Product View (Users)</a>
+        <a href="{% url 'view_requested_products' %}" style="display: block; color: white; margin-bottom: 15px;">My Requested Products</a>
 
 
 
@@ -35,7 +35,7 @@
             onmouseover="this.style.backgroundColor='#0056b3'; this.style.transform='scale(1.05)';"
             onmouseout="this.style.backgroundColor='#007bff'; this.style.transform='scale(1)';"
             onclick="location.href='{% url 'requested_inventory' %}'">
-        Manage Requested Inventory
+        Show Products
     </button>
 {% endif %}
 

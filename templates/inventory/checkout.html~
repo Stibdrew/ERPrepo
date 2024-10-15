@@ -63,7 +63,7 @@
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-block mt-3">Generate Invoice and Proceed with Payment</button>
+            <button type="submit" class="btn btn-primary btn-block mt-3">Proceed with Payment</button>
         </form>
     {% endif %}
 </div>

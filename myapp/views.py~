@@ -18,7 +18,7 @@ def edit_profile(request):
     else:
         form = UserProfileEditForm(instance=user_profile)
 
-    return render(request, 'users/profile.html', {'form': form})
+    return render(request, 'users/edit_profile.html', {'form': form})
 
 def home(request):
     return render(request, 'users/home.html')

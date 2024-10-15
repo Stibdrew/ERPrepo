@@ -31,6 +31,8 @@
                                 <span class="text-muted">Waiting for approval</span>
                             {% elif request.status == 'declined' %}
                                 <span class="badge bg-danger">Declined</span>
+                            {% elif request.status == 'paid' %}
+                                <span class="badge bg-primary">Paid</span>
                             {% else %}
                                 <span class="badge bg-secondary">Unknown</span>
                             {% endif %}
@@ -46,11 +48,12 @@
                                     <button type="submit" class="btn btn-danger btn-sm">Cancel Request</button>
                                 </form>
                             {% elif request.status == 'declined' %}
-                                <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this request?');">
+                                <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to remove this request?');">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">Remove </button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Remove</button>
                                 </form>
-
+                            {% elif request.status == 'paid' %}
+                                <a href="{% url 'receipt' request.id %}" class="btn btn-info btn-sm">View Receipt</a>
                             {% endif %}
                         </td>
                     </tr>

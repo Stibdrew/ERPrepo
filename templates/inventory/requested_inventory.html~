@@ -119,7 +119,7 @@
             alert("You cannot request more than the available quantity (" + availableQuantity + ").");
             return false;
         }
-        return confirm("Are you sure you want to request " );
+        return confirm("Are you sure you want to request " + requestedQuantity);
     }
 </script>
 {% endblock %}

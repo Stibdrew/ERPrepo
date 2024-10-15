@@ -17,6 +17,7 @@ class ProductRequest(models.Model):
         ('pending', 'Pending'),
         ('approved', 'Approved'),
         ('declined', 'Declined'),
+        ('paid', 'Paid'),  # Add the 'paid' status here
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -30,6 +31,7 @@ class ProductRequest(models.Model):
 
     def get_total_cost(self):
         return self.product.price * self.quantity_requested  # Calculate total cost
+
 
 
 class StockMovement(models.Model):
