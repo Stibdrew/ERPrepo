@@ -18,8 +18,9 @@
         <!-- Links to admin functionalities -->
         {% if user.is_superuser %}
                     <a href="{% url 'admin_page' %}" style="display: block; color: white; margin-bottom: 15px;">Request Records</a>
-        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-        <a class="nav-link active cool-font" aria-current="page" href="{% url 'all_messages' %}">All Messages</a>
+                    <a href="{% url 'all_messages' %}" style="display: block; color: white; margin-bottom: 15px;">All Messages</a>
+
+
             <a href="{% url 'add_product' %}" style="display: block; color: white; margin-bottom: 15px;">Add Product</a>
             <a href="{% url 'all_product_requests' %}" style="display: block; color: white; margin-bottom: 15px;">All Product Requests</a>
         {% endif %}

@@ -38,9 +38,6 @@
                         <li class="list-group-item">
                             <strong>Business Title:</strong> {{ user_profile.business_title }}
                         </li>
-                        <li class="list-group-item">
-                            <strong>Balance:</strong> ${{ user_profile.balance }} <!-- Added balance information -->
-                        </li>
                     </ul>
                 </div>
             </div>

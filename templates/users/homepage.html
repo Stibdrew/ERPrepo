@@ -17,6 +17,7 @@
 
         <!-- Links to admin functionalities -->
         {% if user.is_superuser %}
+                            <a href="{% url 'show_all_users' %}" style="display: block; color: white; margin-bottom: 15px;">Show All Users</a>
                     <a href="{% url 'admin_page' %}" style="display: block; color: white; margin-bottom: 15px;">Request Records</a>
                     <a href="{% url 'all_messages' %}" style="display: block; color: white; margin-bottom: 15px;">All Messages</a>
 

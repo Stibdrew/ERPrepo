@@ -1,0 +1,54 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">All Users</h2>
+    <div class="table-responsive">
+        <form method="POST">
+            {% csrf_token %}
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Company Name</th>
+                        <th>Mobile Number</th>
+                        <th>Business Title</th>
+                        <th>Balance</th>
+                        <th>Action</th> <!-- Added Action column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        {% for profile in user_profiles %}
+                            {% if profile.user.id == user.id %}
+                            <td>{{ profile.full_name }}</td>
+                            <td>{{ profile.company_name }}</td>
+                            <td>{{ profile.mobile_number }}</td>
+                            <td>{{ profile.business_title }}</td>
+                            <td>
+                                <!-- Editable balance input -->
+                                <input type="text" name="balance_{{ profile.user.id }}" value="{{ profile.balance }}" class="form-control">
+                            </td>
+                            <td>
+                                <!-- Submit button for the current user's balance -->
+                                <button type="submit" name="user_id" value="{{ profile.user.id }}" class="btn btn-sm btn-primary">Update</button>
+                            </td>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center">No users found</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </form>
+    </div>
+</div>
+{% endblock %}
