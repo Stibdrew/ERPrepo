@@ -39,17 +39,12 @@
                         </td>
                         <td>
                             {% if request.status == 'approved' %}
-                                <!-- Proceed to Checkout Button -->
                                 <form method="GET" action="{% url 'checkout' request.id %}" class="d-inline">
-                                    <button type="submit" class="btn btn-success btn-sm">Proceed to Checkout</button>
-                                </form>
+                                 <button type="submit" class="btn btn-success btn-sm">Proceed to Checkout</button>
+                                    
 
-                                <!-- Cancel Request Button -->
-                                <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this request?');">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm">Cancel Request</button>
-                                </form>
 
+                                </form>
                             {% elif request.status == 'pending' %}
                                 <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this request?');">
                                     {% csrf_token %}

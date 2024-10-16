@@ -10,10 +10,26 @@ from decimal import Decimal, InvalidOperation  # Make sure InvalidOperation is i
 
 from django.http import HttpResponseBadRequest
 
+@login_required
 def cancel_request(request, pk):
-    request_obj = ProductRequest.objects.get(pk=pk)
-    request_obj.delete()
-    messages.success(request, 'Request cancelled successfully.')
+    # Fetch the product request object
+    request_obj = get_object_or_404(ProductRequest, pk=pk)
+
+    # Check if the request was approved before canceling
+    if request_obj.status == 'approved':
+        # Restore the product stock
+        product = request_obj.product
+        product.quantity += request_obj.quantity_requested
+        product.save()
+
+    # Cancel the request by setting the status or deleting it
+    request_obj.status = 'canceled'  # Mark the request as canceled (optional)
+    request_obj.save()
+
+    # Alternatively, if you prefer to delete it:
+    # request_obj.delete()
+
+    messages.success(request, 'Request canceled successfully and stock has been restored.')
     return redirect('view_requested_products')
 def delete_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -63,7 +79,7 @@ def update_product(request, product_id):
 def delete_product_view(request):
     products = Product.objects.all()  # Fetch all products to display
 
-    return render(request, 'inventory/delete_product.html', {
+    return render(request, 'inventory/requested_inventory.html', {
         'products': products
     })
 @login_required
