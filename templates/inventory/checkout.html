@@ -1,6 +1,5 @@
 {% extends 'users/base.html' %}
 {% load static %}
-
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Checkout</h2>
@@ -64,6 +63,18 @@
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary btn-block mt-3">Generate Invoice and Proceed with Payment</button>
+
+            <!-- Display Django messages below the button -->
+            {% if messages %}
+                <div class="mt-3">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                            <strong>Notice:</strong> {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </form>
     {% endif %}
 </div>

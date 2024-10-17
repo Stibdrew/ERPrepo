@@ -1,0 +1,50 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Manage Credit Memo Requests</h2>
+
+    {% if pending_requests %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Request ID</th>
+                <th>Product</th>
+                <th>Requested By</th>
+                <th>Reason</th>
+                <th>New Quantity</th>
+                <th>Requested At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in pending_requests %}
+            <tr>
+                <td>{{ request.id }}</td>
+                <td>{{ request.product_request.product.name }}</td>
+                <td>{{ request.requested_by.username }}</td>
+                <td>{{ request.reason }}</td>
+                <td>
+                    {% if request.new_quantity %}
+                        {{ request.new_quantity }}
+                    {% else %}
+                        <em>Not specified</em>
+                    {% endif %}
+                </td>
+                <td>{{ request.created_at|date:"F d, Y H:i" }}</td>
+                <td>
+                    <form method="post" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p class="text-center">No pending credit memo requests.</p>
+    {% endif %}
+</div>
+{% endblock %}

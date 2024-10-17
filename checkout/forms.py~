@@ -1,0 +1,15 @@
+from django import forms
+from requested_inventory.models import ProductRequest
+from .models import CreditMemoRequest, ProductRequest
+
+
+class ProductRequestEditForm(forms.ModelForm):
+    class Meta:
+        model = ProductRequest
+        fields = ['quantity_requested', 'status']  # Add other fields you want to allow editing
+
+
+class CreditMemoRequestForm(forms.ModelForm):
+    class Meta:
+        model = CreditMemoRequest
+        fields = ['reason']

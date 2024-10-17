@@ -1,6 +1,4 @@
 {% extends 'users/base.html' %}
-{% load static %}
-
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Receipt</h2>
@@ -12,17 +10,17 @@
             </div>
             <hr>
             <div class="mb-3">
-                <p class="card-text formatted-price" data-price="{{ product_request.product.price|floatformat:2 }}"><strong>Price:</strong> $<span></span></p>
+                <p class="card-text"><strong>Price:</strong> ${{ product_request.product.price|floatformat:2 }}</p>
                 <p class="card-text"><strong>SKU:</strong> {{ product_request.product.sku }}</p>
                 <p class="card-text"><strong>Description:</strong> {{ product_request.product.description }}</p>
                 <p class="card-text"><strong>Quantity Requested:</strong> {{ product_request.quantity_requested }}</p>
             </div>
             <hr>
             <div class="mb-3">
-                <p class="card-text formatted-total-cost" data-total-cost="{{ total_cost|floatformat:2 }}"><strong>Total Cost:</strong> $<span></span></p>
-                <p class="card-text formatted-total-cost" data-total-cost="{{ tax|floatformat:2 }}"><strong>Tax (0.1%):</strong> $<span></span></p>
-                <p class="card-text formatted-total-cost" data-total-cost="{{ shipping_fee|floatformat:2 }}"><strong>Shipping Fee:</strong> $<span></span></p>
-                <p class="card-text formatted-total-cost" data-total-cost="{{ total_with_tax_and_shipping|floatformat:2 }}"><strong>Total Cost with Tax and Shipping:</strong> $<span></span></p>
+                <p class="card-text"><strong>Total Cost:</strong> ${{ total_cost|floatformat:2 }}</p>
+                <p class="card-text"><strong>Tax (0.1%):</strong> ${{ tax|floatformat:2 }}</p>
+                <p class="card-text"><strong>Shipping Fee:</strong> ${{ shipping_fee|floatformat:2 }}</p>
+                <p class="card-text"><strong>Total Cost with Tax and Shipping:</strong> ${{ total_with_tax_and_shipping|floatformat:2 }}</p>
             </div>
             <hr>
             <h4 class="mt-4">Customer Information</h4>
@@ -33,24 +31,9 @@
             <hr>
             <div class="text-center mt-4">
                 <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
-                <a href="{% url 'homepage' %}" class="btn btn-secondary">Issue Credit Memo</a>
-
+                <a href="{% url 'request_credit_memo' product_request.id %}" class="btn btn-secondary">Request Credit Memo</a>
             </div>
         </div>
     </div>
 </div>
-
-<script>
-    function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    // Format all prices and total costs on the page
-    document.querySelectorAll('.formatted-price, .formatted-total-cost').forEach(element => {
-        const price = parseFloat(element.dataset.price || element.dataset.totalCost);
-        if (!isNaN(price)) {
-            element.querySelector('span').innerText = formatNumber(price.toFixed(2));
-        }
-    });
-</script>
 {% endblock %}
