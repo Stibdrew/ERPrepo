@@ -2,41 +2,68 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2>All Messages</h2>
+    <h2 class="mb-4 text-center text-primary">All Messages</h2>
+
     {% if messages %}
         <ul class="list-group">
             {% for message in messages %}
-                <li class="list-group-item">
-                    <strong>Sent by:</strong> {{ message.user.username }}<br>
-                    <strong>Message:</strong> {{ message.content }}<br>
-                    <strong>Sent on:</strong> {{ message.created_at|date:"M d, Y, H:i" }}<br>
+                <li class="list-group-item mb-3 p-3 border rounded">
+                    <div class="mb-2">
+                        <strong>Sent by:</strong> <span>{{ message.user.username }}</span><br>
+                        <strong>Message:</strong> <span>{{ message.content }}</span><br>
+                        <strong>Sent on:</strong> <span class="text-muted">{{ message.created_at|date:"M d, Y, H:i" }}</span>
+
+                        <!-- Check if the message has an image -->
+                        {% if message.image %}
+                            <div class="mt-2">
+                                <strong>Image:</strong><br>
+                                <img src="{{ message.image.url }}" alt="Message Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                            </div>
+                        {% endif %}
+                    </div>
 
                     <!-- Display replies for this message -->
                     {% if message.replies.all %}
+                        <h5 class="mt-3">Replies:</h5>
                         <ul class="list-group mt-2">
                             {% for reply in message.replies.all %}
                                 <li class="list-group-item">
-                                    <strong>Reply by:</strong> {{ reply.user.username }}<br>
-                                    <strong>Reply:</strong> {{ reply.content }}<br>
-                                    <strong>Replied on:</strong> {{ reply.created_at|date:"M d, Y, H:i" }}<br>
+                                    <strong>Reply by:</strong> <span>{{ reply.user.username }}</span><br>
+                                    <strong>Reply:</strong> <span>{{ reply.content }}</span><br>
+                                    <strong>Replied on:</strong> <span class="text-muted">{{ reply.created_at|date:"M d, Y, H:i" }}</span>
+
+                                    <!-- Check if the reply has an image -->
+                                    {% if reply.image %}
+                                        <div class="mt-2">
+                                            <strong>Image:</strong><br>
+                                            <img src="{{ reply.image.url }}" alt="Reply Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                                        </div>
+                                    {% endif %}
                                 </li>
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p>No replies yet.</p>
+                        <p class="mt-2 text-muted">No replies yet.</p>
                     {% endif %}
 
                     <!-- Reply Form for the current message -->
-                    <form action="{% url 'add_reply' message.id %}" method="POST" class="mt-3">
+                    <form action="{% url 'add_reply' message.id %}" method="POST" enctype="multipart/form-data" class="mt-3">  <!-- Add enctype for file upload -->
                         {% csrf_token %}
-                        {{ reply_form.as_p }}  <!-- This should render the reply form -->
+                        <div class="form-group">
+                            <label for="reply-content">Your Reply:</label>
+                            <textarea name="content" class="form-control" placeholder="Type your reply here..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="image">Upload an image (optional):</label>
+                            <input type="file" name="image" accept="image/*" class="form-control">  <!-- Image upload input -->
+                        </div>
                         <button type="submit" class="btn btn-primary">Reply</button>
                     </form>
                 </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No messages found.</p>
+        <p class="text-center text-muted">No messages found.</p>
     {% endif %}
 </div>
 {% endblock %}

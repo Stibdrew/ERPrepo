@@ -8,8 +8,20 @@ from django.views.decorators.http import require_POST
 from .models import Product  # Adjust the import based on your app structure
 from decimal import Decimal, InvalidOperation  # Make sure InvalidOperation is imported
 
-from django.http import HttpResponseBadRequest
 
+def search_products(request):
+    query = request.GET.get('query', '')
+
+    if query:
+        products = Product.objects.filter(name__icontains=query)  # Search products based on the name
+    else:
+        products = Product.objects.all()  # If query is empty, return all products
+
+    context = {
+        'products': products,
+        'query': query,
+    }
+    return render(request, 'inventory/requested_inventory.html', context)  # Replace with the correct template
 @login_required
 def cancel_request(request, pk):
     # Fetch the product request object

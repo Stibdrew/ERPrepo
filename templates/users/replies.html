@@ -9,7 +9,6 @@
         <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
         <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
 
-
         <!-- Link to the messages list -->
         {% if user.is_superuser %}
         <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
@@ -25,7 +24,15 @@
                 <li class="list-group-item">
                     <strong>Message:</strong> {{ message.content }}<br>
                     <strong>Sent on:</strong> {{ message.created_at|date:"M d, Y, H:i" }}<br>
-                    
+
+                    <!-- Check if the message has an image -->
+                    {% if message.image %}
+                        <div class="mt-2">
+                            <strong>Image:</strong><br>
+                            <img src="{{ message.image.url }}" alt="Message Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                        </div>
+                    {% endif %}
+
                     <strong>Replies:</strong>
                     <ul>
                         {% for reply in replies %}
@@ -33,6 +40,14 @@
                             <strong>Replied by:</strong> {{ reply.user.username }}<br>
                             <strong>Reply:</strong> {{ reply.content }}<br>
                             <strong>Replied on:</strong> {{ reply.created_at|date:"M d, Y, H:i" }}<br>
+
+                            <!-- Check if the reply has an image -->
+                            {% if reply.image %}
+                                <div class="mt-2">
+                                    <strong>Image:</strong><br>
+                                    <img src="{{ reply.image.url }}" alt="Reply Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                                </div>
+                            {% endif %}
                         </li>
                         {% empty %}
                         <li>No replies yet.</li>

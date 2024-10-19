@@ -14,7 +14,7 @@ def delete_message(request, message_id):
     if message.user == request.user:  # Ensure the user can only delete their own messages
         message.delete()
 
-    return redirect('all_messages')  # Redirect to the messages list after deletion
+    return redirect('messages_user')  # Redirect to the messages list after deletion
 
 
 @login_required
@@ -35,7 +35,7 @@ def all_messages(request):
 def add_reply(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     if request.method == 'POST':
-        reply_form = ReplyForm(request.POST)
+        reply_form = ReplyForm(request.POST, request.FILES)  # Include request.FILES for image upload
         if reply_form.is_valid():
             reply = reply_form.save(commit=False)
             reply.user = request.user  # Assign the logged-in user to the reply

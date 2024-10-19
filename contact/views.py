@@ -35,7 +35,7 @@ def all_messages(request):
 def add_reply(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     if request.method == 'POST':
-        reply_form = ReplyForm(request.POST)
+        reply_form = ReplyForm(request.POST, request.FILES)  # Include request.FILES for image upload
         if reply_form.is_valid():
             reply = reply_form.save(commit=False)
             reply.user = request.user  # Assign the logged-in user to the reply
@@ -53,10 +53,13 @@ def messages_user(request):
 
 def contact_us(request):
     if request.method == 'POST':
-        form = ContactForm(request.POST)
+        form = ContactForm(request.POST, request.FILES)  # Include request.FILES for image upload
         if form.is_valid():
             content = form.cleaned_data['content']
-            Message.objects.create(user=request.user, content=content)  # Auto-assign the logged-in user
+            message = Message.objects.create(user=request.user, content=content)  # Auto-assign the logged-in user
+            if form.cleaned_data['image']:  # Check if an image was uploaded
+                message.image = form.cleaned_data['image']
+                message.save()
             return redirect('messages_user')  # Redirect to the messages page
     else:
         form = ContactForm()

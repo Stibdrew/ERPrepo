@@ -4,6 +4,16 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center text-primary">All Products</h2>
 
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'search_products' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="Search for products..." value="{{ query }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
     <!-- Success Message for Specific Updates -->
     {% if messages %}
     {% for message in messages %}
@@ -43,11 +53,13 @@
                         <input type="hidden" name="product_name" value="{{ product.id }}">
                         <div class="input-group mb-2">
                             <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required
-                            {% if product.quantity == 0 %} disabled {% endif %}>
+                            {% if product.quantity == 0 %} disabled {% endif %}
+                            oninput="updateTotalCost(this, {{ product.price }})">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Add to Request</button>
                             </div>
                         </div>
+                        <p class="card-text">Total Cost: $<span class="total-cost">0.00</span></p>
                     </form>
 
                     {% if user.is_superuser %}
@@ -93,5 +105,14 @@
         {% endfor %}
     </div>
 </div>
+
+<script>
+    function updateTotalCost(input, price) {
+        const quantity = input.value;
+        const totalCostElement = input.closest('form').querySelector('.total-cost');
+        const totalCost = (quantity * price).toFixed(2);
+        totalCostElement.textContent = totalCost;
+    }
+</script>
 
 {% endblock %}

@@ -12,7 +12,9 @@ from .views import (
     delete_product_view,
     update_stock,
     update_product,
-    cancel_request
+    cancel_request,
+    search_products
+
 
 )
 
@@ -33,6 +35,7 @@ urlpatterns = [
     path('all-product-request', all_product_requests, name='all_product_requests'),
     path('delete_product/<int:product_id>/', delete_product, name='delete_product'),
     path('cancel_request/<pk>/', cancel_request, name='cancel_request'),
+    path('search/', search_products, name='search_products'),
 
 ]
 

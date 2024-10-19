@@ -40,10 +40,7 @@
                             {{ user.username }}
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                            <li><a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a></li>
-                            <li><a class="dropdown-item" href="{% url 'messages_user' %}">Messages</a></li>
-                            <li><a class="dropdown-item" href="{% url 'homepage' %}">Invoice</a></li>
+
                             <li>
                                 <form method="post" action="{% url 'logout' %}">
                                     {% csrf_token %}

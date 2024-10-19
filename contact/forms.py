@@ -1,13 +1,12 @@
-from .models import Message
+from .models import Message, Reply
 from django import forms
-from .models import Reply
 
 class ReplyForm(forms.ModelForm):
     class Meta:
         model = Reply
-        fields = ['content']  # Only include the content field for the reply
+        fields = ['content', 'image']  # Include the image field for the reply
 
 class ContactForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ['content']
+        fields = ['content', 'image']  # Include the image field for the message

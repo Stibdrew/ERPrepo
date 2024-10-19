@@ -9,5 +9,4 @@ urlpatterns = [
     path('my_replies/', my_replies, name='replies'),  # Add this line
     path('messages/delete/<int:message_id>/', delete_message, name='delete_message'),  # Add this line
 
-
 ]
