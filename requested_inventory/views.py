@@ -177,7 +177,7 @@ def view_requested_products(request):
 @login_required
 def add_product(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = ProductForm(request.POST, request.FILES)  # Handle file uploads
         if form.is_valid():
             form.save()
             messages.success(request, "Product added successfully!")
@@ -186,6 +186,8 @@ def add_product(request):
         form = ProductForm()
 
     return render(request, 'inventory/add_product.html', {'form': form})
+
+
 
 @login_required
 def adjust_stock(request, product_id, quantity, movement_type):

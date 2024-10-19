@@ -10,6 +10,7 @@
             <table class="table table-hover table-bordered">
                 <thead class="thead-dark">
                     <tr>
+                        <th scope="col">Product Image</th> <!-- Column for the image -->
                         <th scope="col">Product Name</th>
                         <th scope="col">Quantity Requested</th>
                         <th scope="col">Date Requested</th>
@@ -20,9 +21,16 @@
                 <tbody>
                     {% for request in requested_products %}
                     <tr>
+                        <td class="text-center">
+                            {% if request.product.image %}
+                                <img src="{{ request.product.image.url }}" alt="{{ request.product.name }}" style="width: 100px; height: auto; object-fit: contain;">
+                            {% else %}
+                                <img src="{% static 'path/to/default/image.png' %}" alt="No Image" style="width: 100px; height: auto; object-fit: contain;">
+                            {% endif %}
+                        </td>
                         <td>{{ request.product.name }}</td>
                         <td>{{ request.quantity_requested }}</td>
-                        <td>{{ request.created_at|date:"F d, Y H:i" }}</td> <!-- Display date in a friendly format -->
+                        <td>{{ request.created_at|date:"F d, Y H:i" }}</td>
                         <td>
                             {% if request.status == 'approved' %}
                                 <span class="badge bg-success">Approved</span>
@@ -39,17 +47,13 @@
                         </td>
                         <td>
                             {% if request.status == 'approved' %}
-                                <!-- Proceed to Checkout Button -->
                                 <form method="GET" action="{% url 'checkout' request.id %}" class="d-inline">
                                     <button type="submit" class="btn btn-success btn-sm">Proceed to Checkout</button>
                                 </form>
-
-                                <!-- Cancel Request Button -->
                                 <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this request?');">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger btn-sm">Cancel Request</button>
                                 </form>
-
                             {% elif request.status == 'pending' %}
                                 <form method="POST" action="{% url 'cancel_request' request.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to cancel this request?');">
                                     {% csrf_token %}
