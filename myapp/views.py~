@@ -1,11 +1,22 @@
-from django.shortcuts import render, redirect
-from .forms import UserRegisterForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import UserRegisterForm, UserProfileEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
-from .forms import UserProfileEditForm
-from django.contrib.auth.models import User  # Import the User model
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
+
+@login_required()
+def terminate_account(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user_profile = get_object_or_404(UserProfile, user=user)
+
+    if request.method == 'POST':
+        user_profile.delete()  # Delete the user's profile
+        user.delete()  # Delete the user
+        messages.success(request, f'Account for {user.username} has been terminated successfully!')
+        return redirect('show_all_users')  # Redirect to the user list page after deletion
+
+    return render(request, 'users/show_all_users.html', {'user': user})
 
 
 @login_required()
@@ -25,7 +36,6 @@ def edit_profile(request):
 
 def home(request):
     return render(request, 'users/home.html')
-
 
 def register(request):
     if request.method == 'POST':
@@ -49,7 +59,6 @@ def register(request):
 def homepage(request):
     return render(request, 'users/homepage.html')
 
-
 @login_required()
 def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
@@ -69,35 +78,33 @@ def profile(request):
         'balance': user_profile.balance,  # Pass the balance to the template
         'form': form
     })
+
 def inventory(request):
     return render(request, 'users/inventory.html')
 
-
 def show_all_users(request):
-    users = User.objects.all()  # Retrieve all user objects
+    users = User.objects.all()
+    user_profiles = UserProfile.objects.all()
 
-    def show_all_users(request):
-        users = User.objects.all()
-        user_profiles = UserProfile.objects.all()
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        new_balance = request.POST.get(f'balance_{user_id}')
 
-        if request.method == 'POST':
-            user_id = request.POST.get('user_id')
-            new_balance = request.POST.get(f'balance_{user_id}')
+        if user_id and new_balance:
+            try:
+                # Get the user profile based on the user ID
+                user_profile = get_object_or_404(UserProfile, user_id=user_id)
+                user_profile.balance = float(new_balance)
+                user_profile.save()
+                messages.success(request, f'Balance for {user_profile.full_name} updated successfully!')
+            except ValueError:
+                messages.error(request, 'Please enter a valid number for the balance.')
 
-            if user_id and new_balance:
-                try:
-                    # Get the user profile based on the user ID
-                    user_profile = get_object_or_404(UserProfile, user_id=user_id)
-                    user_profile.balance = float(new_balance)
-                    user_profile.save()
-                    messages.success(request, f'Balance for {user_profile.full_name} updated successfully!')
-                except ValueError:
-                    messages.error(request, 'Please enter a valid number for the balance.')
+        # Always redirect after processing POST to avoid re-submission issues
+        return redirect('show_all_users')
 
-            return redirect('show_all_users')  # Always redirect after processing POST
-
-        # Always render the template if not POST or after redirect
-        return render(request, 'inventory/show_all_users.html', {
-            'users': users,
-            'user_profiles': user_profiles
-        })
+    # Render the template for GET requests or after POST redirects
+    return render(request, 'inventory/show_all_users.html', {
+        'users': users,
+        'user_profiles': user_profiles
+    })

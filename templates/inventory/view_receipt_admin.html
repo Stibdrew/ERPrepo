@@ -1,0 +1,68 @@
+{% extends 'users/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Credit Memo Receipt</h2>
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <h5 class="card-title">{{ credit_memo.product_request.product.name }}</h5>
+                <p class="card-text"><strong>Request Date:</strong> {{ credit_memo.created_at|date:"F d, Y H:i" }}</p>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <p class="card-text"><strong>Price:</strong> $<span id="product-price">{{ credit_memo.product_request.product.price }}</span></p>
+                <p class="card-text"><strong>SKU:</strong> {{ credit_memo.product_request.product.sku }}</p>
+                <p class="card-text"><strong>Description:</strong> {{ credit_memo.product_request.product.description }}</p>
+                <p class="card-text"><strong>Quantity Requested:</strong> <span id="quantity-requested">{{ credit_memo.product_request.quantity_requested }}</span></p>
+            </div>
+            <hr>
+            <div class="mb-3">
+                <p class="card-text"><strong>Tax (0.1%):</strong> $<span id="tax">0.00</span></p>
+                <p class="card-text"><strong>Shipping Fee:</strong> $<span id="shipping-fee">2.00</span></p>
+                <p class="card-text"><strong>Total Cost:</strong> $<span id="total-cost">0.00</span></p>
+                <p class="card-text"><strong>Total Cost with Tax and Shipping:</strong> $<span id="total-with-tax-and-shipping">0.00</span></p>
+            </div>
+            <hr>
+            <h3 class="mt-4">Credit Memo Details</h3>
+            {% if credit_memo %}
+                <p><strong>New Quantity:</strong> {{ credit_memo.new_quantity }}</p>
+                <p><strong>Reason:</strong> {{ credit_memo.reason }}</p>
+                <p><strong>Status:</strong> {{ credit_memo.status }}</p>
+                <p><strong>Requested At:</strong> {{ credit_memo.created_at|date:"F d, Y H:i" }}</p>
+            {% else %}
+                <p>No credit memo associated with this request.</p>
+            {% endif %}
+            <hr>
+            <h4 class="mt-4">Customer Information</h4>
+            <p><strong>Requested By:</strong> {{ credit_memo.requested_by.username }}</p>
+            <p><strong>Email:</strong> {{ credit_memo.requested_by.email }}</p>
+            <p><strong>Mobile Number:</strong> {{ credit_memo.requested_by.userprofile.mobile_number }}</p>
+            <p><strong>Business Title:</strong> {{ credit_memo.requested_by.userprofile.business_title }}</p>
+            <hr>
+            <div class="text-center mt-4">
+                <a href="{% url 'manage_credit_memo_requests' %}" class="btn btn-secondary">Back to Credit Memo Requests</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const price = parseFloat(document.getElementById('product-price').textContent);
+        const quantity = parseInt(document.getElementById('quantity-requested').textContent);
+        const shippingFee = 2.00; // constant shipping fee
+
+        // Calculate total cost
+        const totalCost = price * quantity;
+        document.getElementById('total-cost').textContent = totalCost.toFixed(2);
+
+        // Calculate tax (0.1%)
+        const tax = totalCost * 0.001;
+        document.getElementById('tax').textContent = tax.toFixed(2);
+
+        // Calculate total with tax and shipping
+        const totalWithTaxAndShipping = totalCost + tax + shippingFee;
+        document.getElementById('total-with-tax-and-shipping').textContent = totalWithTaxAndShipping.toFixed(2);
+    });
+</script>
+{% endblock %}

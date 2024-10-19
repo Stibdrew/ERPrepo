@@ -4,6 +4,18 @@
 <div class="container mt-5">
     <h2 class="text-center mb-4">Checkout</h2>
 
+    <!-- Display Django messages -->
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                    <strong>Notice:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <!-- Product Information -->
     <div class="card mb-4">
         <div class="card-body">
@@ -19,63 +31,43 @@
         </div>
     </div>
 
+    <!-- Payment Method Selection -->
+    <div class="mb-4">
+        <h5> Payment Method</h5>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_balance" value="balance" checked>
+            <label class="form-check-label" for="payment_method_balance">Use Account Balance</label>
+        </div>
+    </div>
+
     <!-- Checkout Form -->
+    <form method="POST" action="{% url 'process_payment' product_request.id %}" id="checkout-form">
+        {% csrf_token %}
+
+        <!-- Shipping Address -->
+        <div class="form-group">
+            <label for="shipping_address">Shipping Address</label>
+            <textarea id="shipping_address" name="shipping_address" class="form-control" rows="3" required placeholder="Enter your shipping address"></textarea>
+        </div>
+
+        <!-- Unit of Money (USD) -->
+        <div class="form-group">
+            <label for="currency">Unit of Money</label>
+            <input type="text" id="currency" name="currency" class="form-control" value="USD" readonly>
+        </div>
+
+        <!-- Terms and Agreement -->
+        <div class="form-group">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">I agree to the terms and conditions</label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block mt-3">Generate Invoice and Proceed with Payment</button>
+    </form>
+
     {% if product_request.status == 'paid' %}
         <a href="{% url 'receipt' product_request.id %}" class="btn btn-success btn-block mt-3">View Receipt</a>
-    {% else %}
-        <form method="POST" action="{% url 'process_payment' product_request.id %}">
-            {% csrf_token %}
-            <!-- Shipping Address -->
-            <div class="form-group">
-                <label for="shipping_address">Shipping Address</label>
-                <textarea id="shipping_address" name="shipping_address" class="form-control" rows="3" required placeholder="Enter your shipping address"></textarea>
-            </div>
-
-            <!-- Debit Card Number -->
-            <div class="form-group">
-                <label for="card_number">Debit Card Number</label>
-                <input type="text" id="card_number" name="card_number" class="form-control" maxlength="16" required placeholder="Enter your debit card number">
-            </div>
-
-            <!-- Expiry Date -->
-            <div class="form-group">
-                <label for="expiry_date">Card Expiry Date</label>
-                <input type="month" id="expiry_date" name="expiry_date" class="form-control" required>
-            </div>
-
-            <!-- CVV -->
-            <div class="form-group">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" class="form-control" maxlength="3" required placeholder="3-digit CVV">
-            </div>
-
-            <!-- Unit of Money (USD) -->
-            <div class="form-group">
-                <label for="currency">Unit of Money</label>
-                <input type="text" id="currency" name="currency" class="form-control" value="USD" readonly>
-            </div>
-
-            <!-- Terms and Agreement -->
-            <div class="form-group">
-                <input type="checkbox" id="terms" name="terms" required>
-                <label for="terms">I agree to the terms and conditions</label>
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary btn-block mt-3">Generate Invoice and Proceed with Payment</button>
-
-            <!-- Display Django messages below the button -->
-            {% if messages %}
-                <div class="mt-3">
-                    {% for message in messages %}
-                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
-                            <strong>Notice:</strong> {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </form>
     {% endif %}
 </div>
 

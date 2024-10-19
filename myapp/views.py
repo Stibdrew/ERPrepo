@@ -6,6 +6,20 @@ from .models import UserProfile
 from django.contrib.auth.models import User
 
 @login_required()
+def terminate_account(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    user_profile = get_object_or_404(UserProfile, user=user)
+
+    if request.method == 'POST':
+        user_profile.delete()  # Delete the user's profile
+        user.delete()  # Delete the user
+        messages.success(request, f'Account for {user.username} has been terminated successfully!')
+        return redirect('show_all_users')  # Redirect to the user list page after deletion
+
+    return render(request, 'inventory/show_all_users.html', {'user': user})
+
+
+@login_required()
 def edit_profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 

@@ -205,6 +205,8 @@ def adjust_stock(request, product_id, quantity, movement_type):
     product.save()
 
     return redirect('requested_inventory')
+
+
 @login_required
 def update_stock(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -213,8 +215,13 @@ def update_stock(request, product_id):
         stock_change = int(request.POST.get('stock_change', 0))
         product.quantity += stock_change  # Update stock quantity
         product.save()  # Save the changes
+
+        # Add a success message
         messages.success(request, "Stock updated successfully!")
-        return redirect('requested_inventory')  # Redirect back to the product list
+        return redirect('requested_inventory')  # Redirect to the requested_inventory page
+
+    # If not a POST request, you might want to show the form or some other response
+    return render(request, 'inventory/requested_inventory.html', {'product': product})
 
 
 @login_required

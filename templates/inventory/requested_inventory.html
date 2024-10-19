@@ -4,6 +4,15 @@
 <div class="container mt-5">
     <h2 class="mb-4 text-center text-primary">All Products</h2>
 
+    <!-- Success Message for Specific Updates -->
+    {% if messages %}
+    {% for message in messages %}
+        {% if 'stock_update' in message.tags %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
     <!-- Product List -->
     <div class="row">
         {% for product in products %}
@@ -16,12 +25,20 @@
                     <p class="card-text">Available Stock: {{ product.quantity }}</p>
                     <p class="card-text">Description: {{ product.description }}</p>
 
+                    <!-- Check and display low stock warning -->
+                    {% if product.quantity == 0 %}
+                        <p class="text-danger">Out of Stock</p>
+                    {% elif product.quantity < 10 %}
+                            <p class="text-danger">Warning: Low on stock!</p>
+                    {% endif %}
+
                     <!-- Product Request Form -->
-                    <form method="POST" action="{% url 'add_product_request' %}" onsubmit="return confirmRequest(this, {{ product.quantity }});">
+                    <form method="POST" action="{% url 'add_product_request' %}" class="request-form">
                         {% csrf_token %}
                         <input type="hidden" name="product_name" value="{{ product.id }}">
                         <div class="input-group mb-2">
-                            <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required>
+                            <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required
+                            {% if product.quantity == 0 %} disabled {% endif %}>
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-primary">Add to Request</button>
                             </div>
@@ -58,7 +75,7 @@
                         </div>
                         <button type="submit" class="btn btn-warning btn-sm">Update</button>
                     </form>
-                    <form method="POST" action="{% url 'delete_product' product.id %}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                    <form method="POST" action="{% url 'delete_product' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                     </form>
@@ -72,54 +89,4 @@
     </div>
 </div>
 
-<!-- JavaScript to format numbers and update total cost dynamically -->
-<script>
-    // Function to format numbers with commas
-    function formatNumber(num) {
-        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    // Format all prices and total costs on the page
-    document.querySelectorAll('.formatted-price, .formatted-total-cost').forEach(element => {
-        const price = parseFloat(element.dataset.price || element.dataset.totalCost);
-        if (!isNaN(price)) {
-            element.innerText = 'Price: $' + formatNumber(price.toFixed(2));
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.quantity-input').forEach(function (input) {
-            input.addEventListener('input', function () {
-                var price = parseFloat(this.getAttribute('data-price'));
-                var quantity = parseInt(this.value);
-                var totalCostElement = document.getElementById('total-cost-' + this.closest('form').querySelector('input[name="product_name"]').value);
-
-                if (!isNaN(price) && !isNaN(quantity) && quantity > 0) {
-                    var totalCost = price * quantity;
-                    totalCostElement.textContent = '$ ' + formatNumber(totalCost.toFixed(2));
-                } else {
-                    totalCostElement.textContent = '$ 0.00';
-                }
-            });
-        });
-    });
-
-    function validateQuantity(form, availableQuantity) {
-        var requestedQuantity = parseInt(form.quantity.value);
-        if (requestedQuantity > availableQuantity) {
-            alert("You cannot request more than the available quantity (" + availableQuantity + ").");
-            return false;
-        }
-        return true;
-    }
-
-    function confirmRequest(form, availableQuantity) {
-        var requestedQuantity = parseInt(form.quantity.value);
-        if (requestedQuantity > availableQuantity) {
-            alert("You cannot request more than the available quantity (" + availableQuantity + ").");
-            return false;
-        }
-        return confirm("Are you sure you want to request " );
-    }
-</script>
 {% endblock %}
