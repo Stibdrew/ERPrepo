@@ -14,7 +14,7 @@ def delete_message(request, message_id):
     if message.user == request.user:  # Ensure the user can only delete their own messages
         message.delete()
 
-    return redirect('all_messages')  # Redirect to the messages list after deletion
+    return redirect('messages_user')  # Redirect to the messages list after deletion
 
 
 @login_required

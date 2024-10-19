@@ -66,6 +66,8 @@
                                 </form>
                             {% elif request.status == 'paid' %}
                                 <a href="{% url 'receipt' request.id %}" class="btn btn-info btn-sm">View Receipt</a>
+                                <a href="{% url 'request_credit_memo' request.id %}" class="btn btn-info btn-sm">Request Credit Memo</a>
+
                             {% endif %}
                         </td>
                     </tr>

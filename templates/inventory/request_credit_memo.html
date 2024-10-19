@@ -12,6 +12,10 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
+                <div class="alert alert-warning" role="alert">
+                <strong>Important Note:</strong> If you choose a quantity of <strong>0</strong>, please be aware that you will still incur a shipping fee. This is because shipping costs are applied based on your order's overall processing, not just the product quantity. Additionally, tax will still be incurred.
+                </div>
+
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Submit Credit Memo Request</button>
                     <a href="{% url 'receipt' product_request.id %}" class="btn btn-secondary">Cancel</a>
@@ -21,3 +25,4 @@
     </div>
 </div>
 {% endblock %}
+
