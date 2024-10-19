@@ -56,7 +56,7 @@
                             {% if product.quantity == 0 %} disabled {% endif %}
                             oninput="updateTotalCost(this, {{ product.price }})">
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Add to Request</button>
+                                <button type="submit" class="btn btn-primary request-btn" {% if product.quantity == 0 %} disabled {% endif %} data-stock="{{ product.quantity }}">Add to Request</button>
                             </div>
                         </div>
                         <p class="card-text">Total Cost: $<span class="total-cost">0.00</span></p>
@@ -112,6 +112,19 @@
         const totalCostElement = input.closest('form').querySelector('.total-cost');
         const totalCost = (quantity * price).toFixed(2);
         totalCostElement.textContent = totalCost;
+
+        // Get the product stock from the data attribute
+        const availableStock = parseInt(input.closest('form').querySelector('.request-btn').dataset.stock, 10);
+
+        // Get the request button
+        const requestButton = input.closest('form').querySelector('.request-btn');
+
+        // Enable/disable the button based on quantity and available stock
+        if (quantity > availableStock) {
+            requestButton.disabled = true;
+        } else {
+            requestButton.disabled = false;
+        }
     }
 </script>
 

@@ -14,6 +14,7 @@ urlpatterns = [
     path('edit_profile/', views.edit_profile, name='edit_profile'),  # Add this line
     path('show_all_users/', views.show_all_users, name='show_all_users'),
     path('users/terminate/<int:user_id>/', views.terminate_account, name='terminate_account'),  # Add this line
+    path('cash_in/', views.cash_in, name='cash_in'),
 
 ]
 

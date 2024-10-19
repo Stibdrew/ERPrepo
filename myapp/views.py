@@ -1,10 +1,42 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import UserRegisterForm, UserProfileEditForm
+from .forms import  UserProfileEditForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from django.contrib.auth.models import User
+from.forms import CashInForm
 
+
+
+@login_required
+def cash_in(request):
+    if request.method == 'POST':
+        form = CashInForm(request.POST)
+        if form.is_valid():
+            # Extracting form data
+            amount = form.cleaned_data['amount']
+            card_number = form.cleaned_data['card_number']
+            card_expiry = form.cleaned_data['card_expiry']
+            card_cvv = form.cleaned_data['card_cvv']
+
+            # Simulating a basic credit card validation
+            if not card_number.isdigit() or len(card_number) != 16:
+                messages.error(request, 'Invalid credit card number.')
+            elif len(card_expiry) != 5 or card_expiry[2] != '/':
+                messages.error(request, 'Invalid expiry date format. Use MM/YY.')
+            elif not card_cvv.isdigit() or len(card_cvv) != 3:
+                messages.error(request, 'Invalid CVV code.')
+            else:
+                # Simulate a successful payment and update the user's balance
+                user_profile = UserProfile.objects.get(user=request.user)
+                user_profile.balance += amount
+                user_profile.save()
+                messages.success(request, f'You have successfully added ${amount:.2f} to your balance.')
+                return redirect('cash_in')  # Redirect to avoid form resubmission
+    else:
+        form = CashInForm()
+
+    return render(request, 'users/cash_in.html', {'form': form})
 @login_required()
 def terminate_account(request, user_id):
     user = get_object_or_404(User, id=user_id)

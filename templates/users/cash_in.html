@@ -1,0 +1,72 @@
+<!-- cash_in.html -->
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-primary">Cash In</h2>
+
+    <!-- Success/Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="" class="payment-form">
+        {% csrf_token %}
+
+        <!-- Amount Input -->
+        <div class="form-group">
+            <label for="amount">Amount to Add</label>
+            {{ form.amount }}
+        </div>
+
+        <!-- Credit Card Number -->
+        <div class="form-group">
+            <label for="card_number">Card Number</label>
+            {{ form.card_number }}
+        </div>
+
+        <!-- Expiry Date and CVV -->
+        <div class="form-row">
+            <div class="col-md-6 mb-3">
+                <label for="card_expiry">Expiry Date (MM/YY)</label>
+                {{ form.card_expiry }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="card_cvv">CVV</label>
+                {{ form.card_cvv }}
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block">Add Balance</button>
+    </form>
+</div>
+
+<style>
+    /* Style the form to look professional */
+    .payment-form {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+
+    .payment-form .form-group label {
+        font-weight: bold;
+    }
+
+    .payment-form .form-control {
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    .btn-block {
+        width: 100%;
+    }
+</style>
+
+{% endblock %}
