@@ -2,60 +2,252 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="container" style="display: flex;">
-        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
-            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
-            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+<!-- Add Font Awesome CSS for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-            {% if user.is_superuser %}
-                <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-            {% endif %}
+<style>
+    body {
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); /* Angled gradient for depth */
+        font-family: 'Poppins', sans-serif;
+        color: #FFD700; /* Gold color */
+        overflow-x: hidden; /* Prevent horizontal scroll */
+    }
+
+    /* Side Navigation Bar */
+    .side-nav {
+        background: linear-gradient(to bottom, #111, #000); /* Gradient for sidebar */
+        width: 250px;
+        height: 100vh;
+        padding: 40px 20px;
+        color: #FFD700;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.9); /* Stronger shadow for depth */
+        transition: all 0.3s ease;
+    }
+
+    .side-nav h3 {
+        color: #FFD700;
+        margin-bottom: 40px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 2em;
+        letter-spacing: 2px;
+        animation: glow 1.5s infinite alternate; /* Glow effect */
+    }
+
+    .side-nav a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #FFD700;
+        margin-bottom: 20px;
+        padding: 14px 18px;
+        text-decoration: none;
+        font-size: 1.2em;
+        border-radius: 8px;
+        transition: background 0.3s ease, transform 0.2s ease, color 0.3s ease;
+    }
+
+    .side-nav a:hover {
+        background: #FFD700; /* Gold background on hover */
+        color: #000; /* Black text on hover */
+        transform: translateX(10px); /* More shift on hover */
+    }
+
+    .content-container {
+        margin-left: 270px; /* Adjusted for wider sidebar */
+        padding: 60px;
+        width: calc(100% - 270px);
+        animation: fadeIn 1s ease; /* Smooth fade-in animation */
+    }
+
+    .card {
+        background: linear-gradient(to bottom, #111, #1a1a1a); /* Gradient card background */
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9); /* Stronger shadow */
+        overflow: hidden;
+        margin-top: 50px;
+        color: #FFD700;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-10px); /* Lift on hover */
+        box-shadow: 0 12px 30px rgba(255, 215, 0, 0.6); /* Gold shadow on hover */
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #FFD700, #e6ac00); /* Gold gradient */
+        color: #000;
+        padding: 20px;
+        font-weight: bold;
+        font-size: 1.5em;
+        text-align: center;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #333;
+    }
+
+    .card-body {
+        padding: 30px;
+        font-size: 1.2em;
+    }
+
+    .list-group-item {
+        background: #1a1a1a;
+        font-size: 1.2em;
+        padding: 20px;
+        border: none;
+        color: #FFD700;
+        border-bottom: 1px solid #333;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .list-group-item:hover {
+        background: rgba(255, 215, 0, 0.2); /* Subtle gold highlight */
+        transform: scale(1.02); /* Slight scaling on hover */
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, #FFD700, #e6ac00);
+        border: none;
+        color: black;
+        font-size: 1.2em;
+        padding: 15px 30px;
+        border-radius: 30px;
+        transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.5); /* Soft gold glow */
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #e6ac00, #cc9a00); /* Darker gradient on hover */
+        transform: scale(1.1); /* Bigger scale */
+        box-shadow: 0 6px 25px rgba(255, 215, 0, 0.7); /* Brighter glow */
+    }
+
+    .btn-secondary {
+        background: #333;
+        border: none;
+        color: #FFD700;
+        font-size: 1.2em;
+        padding: 15px 30px;
+        border-radius: 30px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+        background: #4d4d4d;
+        transform: scale(1.1);
+    }
+
+    h2 {
+        font-size: 2.5em;
+        color: #FFD700;
+        font-weight: bold;
+        margin-top: 40px;
+        text-align: center;
+        letter-spacing: 1.5px;
+        animation: glow 2s infinite alternate; /* Glow effect */
+    }
+
+    form {
+        background: #111;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+        margin-top: 50px;
+        color: #FFD700;
+        transition: transform 0.2s ease, box-shadow 0.3s ease;
+    }
+
+    form:hover {
+        transform: translateY(-5px); /* Lift effect */
+        box-shadow: 0 10px 35px rgba(255, 215, 0, 0.6); /* Gold glow on hover */
+    }
+
+    form .btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    /* Keyframes for animations */
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+        to {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="side-nav">
+    <h3>WEB-BASED</h3>
+    <a href="{% url 'inventory' %}"><i class="fas fa-boxes"></i> Inventory</a>
+    {% if user.is_superuser %}
+        <a href="{% url 'admin_page' %}"><i class="fas fa-clipboard-list"></i> Request Records</a>
+    {% endif %}
+</div>
+
+<div class="content-container">
+    <h2>Profile Information</h2>
+    <div class="card">
+        <div class="card-header">
+            User Details
         </div>
-
-        <div class="container mt-5">
-            <h2 class="text-center mb-4">Profile Information</h2>
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">User Details</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <strong>Username:</strong> {{ user.username }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Email:</strong> {{ user.email }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Full Name:</strong> {{ user_profile.full_name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Company Name:</strong> {{ user_profile.company_name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Business Title:</strong> {{ user_profile.business_title }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Balance:</strong> ${{ user_profile.balance }} <!-- Added balance information -->
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Edit Profile Form -->
-            <h2 class="text-center mt-4">Edit Profile Information</h2>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form|crispy }}  <!-- Use crispy forms for better styling -->
-                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
-            </form>
-
-            <div class="text-center mt-4">
-                <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
-            </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Username:</strong> {{ user.username }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Email:</strong> {{ user.email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Full Name:</strong> {{ user_profile.full_name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Company Name:</strong> {{ user_profile.company_name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Business Title:</strong> {{ user_profile.business_title }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Balance:</strong> ${{ user_profile.balance }}
+                </li>
+            </ul>
         </div>
     </div>
+
+    <!-- Edit Profile Form -->
+    <h2>Edit Profile Information</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
 {% endblock %}

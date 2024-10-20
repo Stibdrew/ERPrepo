@@ -2,57 +2,219 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-    <div class="container" style="display: flex;">
-        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
-            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
-            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
+<!-- Add Font Awesome CSS for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-            {% if user.is_superuser %}
-                <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-            {% endif %}
+<style>
+    body {
+        background: linear-gradient(to bottom, #000, #333); /* Black gradient background */
+        font-family: 'Poppins', sans-serif;
+        color: #FFD700; /* Gold color */
+    }
+
+    .side-nav {
+        background: linear-gradient(to bottom, #111, #000); /* Gradient for sidebar */
+        width: 240px;
+        height: 100vh;
+        padding: 30px 20px;
+        color: #FFD700;
+        position: fixed;
+        top: 0;
+        left: 0;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.8); /* Strong shadow for depth */
+        transition: all 0.3s ease;
+    }
+
+    .side-nav h3 {
+        color: #FFD700; /* Gold color */
+        margin-bottom: 40px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 2em;
+        letter-spacing: 2px;
+    }
+
+    .side-nav a {
+        display: block;
+        color: #FFD700;
+        margin-bottom: 20px;
+        padding: 12px 18px;
+        text-decoration: none;
+        font-size: 1.2em;
+        border-radius: 8px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .side-nav a:hover {
+        background: #FFD700; /* Gold background on hover */
+        color: #000; /* Black text on hover */
+        transform: translateX(10px); /* Shift more on hover */
+    }
+
+    .content-container {
+        margin-left: 260px; /* Adjusted for wider sidebar */
+        padding: 50px;
+        width: calc(100% - 260px);
+    }
+
+    .card {
+        background: linear-gradient(to bottom, #111, #1a1a1a); /* Gradient card background */
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9); /* Stronger shadow for a luxurious look */
+        overflow: hidden;
+        margin-top: 40px;
+        color: #FFD700;
+        transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px); /* Slight lift on hover */
+    }
+
+    .card-header {
+        background-color: #FFD700; /* Gold header background */
+        color: #000; /* Black text for contrast */
+        padding: 20px;
+        font-weight: bold;
+        font-size: 1.5em;
+        text-align: center;
+    }
+
+    .card-body {
+        padding: 25px;
+        font-size: 1.2em;
+    }
+
+    .list-group-item {
+        background: #1a1a1a;
+        font-size: 1.2em;
+        padding: 20px;
+        border: none;
+        color: #FFD700;
+        border-bottom: 1px solid #333;
+    }
+
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(to right, #FFD700, #e6ac00); /* Gradient gold */
+        border: none;
+        color: black;
+        font-size: 1.2em;
+        padding: 12px 25px;
+        border-radius: 30px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5); /* Glow effect */
+    }
+
+    .btn-primary:hover {
+        background: linear-gradient(to right, #e6ac00, #cc9a00); /* Darker gold gradient */
+        transform: scale(1.08); /* Larger hover effect */
+    }
+
+    .btn-secondary {
+        background: #333;
+        border: none;
+        color: #FFD700;
+        font-size: 1.2em;
+        padding: 12px 25px;
+        border-radius: 30px;
+        transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #4d4d4d;
+        transform: scale(1.08);
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 2.2em;
+        color: #FFD700;
+        font-weight: bold;
+        margin-top: 40px;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    form {
+        background: #111;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.9);
+        margin-top: 40px;
+        color: #FFD700;
+        transition: transform 0.2s ease;
+    }
+
+    form:hover {
+        transform: translateY(-5px); /* Lift effect on hover */
+    }
+
+    form .btn {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+    }
+</style>
+
+<div class="side-nav">
+    <h3>WEB-BASED</h3>
+    <a href="{% url 'inventory' %}"><i class="fas fa-boxes"></i> Inventory</a>
+    {% if user.is_superuser %}
+        <a href="{% url 'admin_page' %}"><i class="fas fa-clipboard-list"></i> Request Records</a>
+    {% endif %}
+</div>
+
+<div class="content-container">
+    <h2>Profile Information</h2>
+    <div class="card">
+        <div class="card-header">
+            User Details
         </div>
-
-        <div class="container mt-5">
-            <h2 class="text-center mb-4">Profile Information</h2>
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">User Details</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <strong>Username:</strong> {{ user.username }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Email:</strong> {{ user.email }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Full Name:</strong> {{ user_profile.full_name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Company Name:</strong> {{ user_profile.company_name }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
-                        </li>
-                        <li class="list-group-item">
-                            <strong>Business Title:</strong> {{ user_profile.business_title }}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Edit Profile Form -->
-            <h2 class="text-center mt-4">Edit Profile Information</h2>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form|crispy }}  <!-- Use crispy forms for better styling -->
-                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
-            </form>
-
-            <div class="text-center mt-4">
-                <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
-            </div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <strong>Username:</strong> {{ user.username }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Email:</strong> {{ user.email }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Full Name:</strong> {{ user_profile.full_name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Company Name:</strong> {{ user_profile.company_name }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Mobile Number:</strong> {{ user_profile.mobile_number }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Business Title:</strong> {{ user_profile.business_title }}
+                </li>
+                <li class="list-group-item">
+                    <strong>Balance:</strong> ${{ user_profile.balance }}
+                </li>
+            </ul>
         </div>
     </div>
+
+    <!-- Edit Profile Form -->
+    <h2>Edit Profile Information</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
 {% endblock %}

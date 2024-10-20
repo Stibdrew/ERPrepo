@@ -1,23 +1,23 @@
 {% extends 'users/base.html' %}
 {% load static %}
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Checkout</h2>
+<div class="container mt-5" style="color: gold;">
+    <h2 class="text-center mb-4" style="color: gold; text-shadow: 1px 1px 2px black;">Checkout</h2>
 
     <!-- Display Django messages -->
     {% if messages %}
         <div class="mb-4">
             {% for message in messages %}
-                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert" style="background-color: black; color: gold; border: 1px solid gold;">
                     <strong>Notice:</strong> {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="color: gold;"></button>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
 
     <!-- Product Information -->
-    <div class="card mb-4">
+    <div class="card mb-4" style="background-color: black; color: gold; border: 1px solid gold;">
         <div class="card-body">
             <h5 class="card-title">{{ product_request.product.name }}</h5>
             <p class="card-text"><strong>Price:</strong> <span class="formatted-price" data-price="{{ product_request.product.price }}">$ {{ product_request.product.price|floatformat:2 }}</span></p>
@@ -33,41 +33,43 @@
 
     <!-- Payment Method Selection -->
     <div class="mb-4">
-        <h5> Payment Method</h5>
+        <h5 style="color: gold;">Payment Method</h5>
         <div class="form-check">
-            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_balance" value="balance" checked>
-            <label class="form-check-label" for="payment_method_balance">Use Account Balance</label>
+            <input class="form-check-input" type="radio" name="payment_method" id="payment_method_balance" value="balance" checked style="background-color: black; border-color: gold;">
+            <label class="form-check-label" for="payment_method_balance" style="color: gold;">Use Account Balance</label>
         </div>
     </div>
 
     <!-- Checkout Form -->
-    <form method="POST" action="{% url 'process_payment' product_request.id %}" id="checkout-form">
+    <form method="POST" action="{% url 'process_payment' product_request.id %}" id="checkout-form" style="background-color: black; padding: 20px; border: 1px solid gold; border-radius: 10px;">
         {% csrf_token %}
 
         <!-- Shipping Address -->
-        <div class="form-group">
-            <label for="shipping_address">Shipping Address</label>
-            <textarea id="shipping_address" name="shipping_address" class="form-control" rows="3" required placeholder="Enter your shipping address"></textarea>
+        <div class="form-group mb-3">
+            <label for="shipping_address" style="color: gold;">Shipping Address</label>
+            <textarea id="shipping_address" name="shipping_address" class="form-control" rows="3" required placeholder="Enter your shipping address" style="background-color: black; color: gold; border: 1px solid gold;"></textarea>
         </div>
 
         <!-- Unit of Money (USD) -->
-        <div class="form-group">
-            <label for="currency">Unit of Money</label>
-            <input type="text" id="currency" name="currency" class="form-control" value="USD" readonly>
+        <div class="form-group mb-3">
+            <label for="currency" style="color: gold;">Unit of Money</label>
+            <input type="text" id="currency" name="currency" class="form-control" value="USD" readonly style="background-color: black; color: gold; border: 1px solid gold;">
         </div>
 
         <!-- Terms and Agreement -->
-        <div class="form-group">
-            <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the terms and conditions</label>
+        <div class="form-group mb-3">
+            <input type="checkbox" id="terms" name="terms" required style="background-color: black; border-color: gold;">
+            <label for="terms" style="color: gold;">I agree to the terms and conditions</label>
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-block mt-3">Generate Invoice and Proceed with Payment</button>
+        <button type="submit" class="btn btn-block mt-3" style="background-color: gold; color: black; font-weight: bold; border: 1px solid gold;">
+            Generate Invoice and Proceed with Payment
+        </button>
     </form>
 
     {% if product_request.status == 'paid' %}
-        <a href="{% url 'receipt' product_request.id %}" class="btn btn-success btn-block mt-3">View Receipt</a>
+        <a href="{% url 'receipt' product_request.id %}" class="btn btn-success btn-block mt-3" style="background-color: gold; color: black; font-weight: bold; border: 1px solid gold;">View Receipt</a>
     {% endif %}
 </div>
 

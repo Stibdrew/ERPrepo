@@ -1,106 +1,150 @@
+<!-- cash_in.html -->
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4 text-center text-primary">Cash In</h2>
-
-    <!-- Success/Error Messages -->
-    {% if messages %}
-        <div class="mb-4">
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} text-center">{{ message }}</div>
-            {% endfor %}
-        </div>
-    {% endif %}
-
-    <form method="POST" action="" class="payment-form">
-        {% csrf_token %}
-
-        <!-- Amount Input -->
-        <div class="form-group">
-            <label for="amount">Amount to Add</label>
-            {{ form.amount|add_class:"form-control shadow-sm p-3" }}
-        </div>
-
-        <!-- Credit Card Number -->
-        <div class="form-group">
-            <label for="card_number">Card Number</label>
-            {{ form.card_number|add_class:"form-control shadow-sm p-3" }}
-        </div>
-
-        <!-- Expiry Date and CVV -->
-        <div class="form-row">
-            <div class="col-md-6 mb-3">
-                <label for="card_expiry">Expiry Date (MM/YY)</label>
-                {{ form.card_expiry|add_class:"form-control shadow-sm p-3" }}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+            <div class="position-sticky">
+                <h5 class="text-light">Navigation</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Cash In</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Transactions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Settings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" href="#">Logout</a>
+                    </li>
+                </ul>
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="card_cvv">CVV</label>
-                {{ form.card_cvv|add_class:"form-control shadow-sm p-3" }}
-            </div>
-        </div>
+        </nav>
 
-        <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary btn-block shadow-sm">Add Balance</button>
-    </form>
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
+            <h2 class="mb-4 text-center text-light">Cash In</h2>
+
+            <!-- Success/Error Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="atm-card">
+                <form method="POST" action="" class="payment-form">
+                    {% csrf_token %}
+
+                    <!-- Amount Input -->
+                    <div class="form-group">
+                        <label for="amount">Amount to Add</label>
+                        <input type="number" id="amount" name="amount" class="form-control" required>
+                    </div>
+
+                    <!-- Credit Card Number -->
+                    <div class="form-group">
+                        <label for="card_number">Card Number</label>
+                        <input type="text" id="card_number" name="card_number" class="form-control" required>
+                    </div>
+
+                    <!-- Expiry Date and CVV -->
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="card_expiry">Expiry Date (MM/YY)</label>
+                            <input type="text" id="card_expiry" name="card_expiry" class="form-control" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group col-md-6 mb-3">
+                            <label for="card_cvv">CVV</label>
+                            <input type="text" id="card_cvv" name="card_cvv" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-block">Add Balance</button>
+                </form>
+            </div>
+        </main>
+    </div>
 </div>
 
 <style>
-    /* Style the form to look professional */
-    .payment-form {
-        max-width: 500px;
-        margin: 0 auto;
-        padding: 30px;
-        border: 1px solid #e0e0e0;
-        border-radius: 10px;
-        background-color: #fff;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
+    /* General body styling */
+    body {
+        background-color: #343a40; /* Dark background */
+        color: #fff; /* Default text color */
     }
 
-    .payment-form:hover {
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    /* Sidebar styling */
+    .sidebar {
+        height: 100vh; /* Full height */
+        padding: 15px; /* Padding for sidebar */
+    }
+
+    .sidebar .nav-link {
+        color: #fff; /* White color for links */
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: #555; /* Darken background on hover */
+    }
+
+    /* ATM card styling */
+    .atm-card {
+        max-width: 500px;
+        margin: 20px auto; /* Center the card with top margin */
+        padding: 30px;
+        border-radius: 15px;
+        background: linear-gradient(145deg, #444d56, #353b43);
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .payment-form h2 {
+        color: #f8c146; /* Gold color for heading */
     }
 
     .payment-form .form-group label {
-        font-weight: 600;
-        color: #333;
+        color: #f8c146; /* Gold color for labels */
+        font-weight: bold;
     }
 
     .payment-form .form-control {
-        border: 1px solid #ced4da;
-        border-radius: 6px;
-        height: 50px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
+        width: 100%; /* Ensure full width */
+        height: 50px; /* Increased height for visibility */
+        font-size: 1.2rem; /* Increased font size for readability */
+        border-radius: 5px;
+        border: 2px solid #f8c146; /* Thicker gold border */
+        padding: 0 10px;
+        background-color: #fff; /* Background for input fields */
+        color: #000; /* Text color for inputs */
+        margin-bottom: 15px; /* Add space below each input */
     }
 
     .payment-form .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+        border-color: #fff; /* White border on focus */
+        background-color: #e9ecef; /* Lighter input on focus */
     }
 
     .btn-block {
-        background-color: #007bff;
-        color: white;
+        width: 100%;
+        background-color: #555; /* Neutral color for button */
         border: none;
-        border-radius: 6px;
-        height: 50px;
-        font-size: 1.1rem;
-        font-weight: bold;
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.2s;
+        color: #fff; /* Text color for button */
+        padding: 12px; /* Increase padding for the button */
     }
 
     .btn-block:hover {
-        background-color: #0056b3;
-        box-shadow: 0 5px 12px rgba(0, 91, 187, 0.4);
-    }
-
-    .alert {
-        border-radius: 8px;
-        padding: 15px;
-        font-size: 0.95rem;
-        text-align: center;
+        background-color: #777; /* Darker on hover */
     }
 </style>
+
 {% endblock %}

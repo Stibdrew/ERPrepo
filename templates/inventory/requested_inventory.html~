@@ -1,0 +1,131 @@
+{% extends 'users/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-primary">All Products</h2>
+
+    <!-- Search Bar -->
+    <form method="GET" action="{% url 'search_products' %}" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="query" class="form-control" placeholder="Search for products..." value="{{ query }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Success Message for Specific Updates -->
+    {% if messages %}
+    {% for message in messages %}
+        {% if 'stock_update' in message.tags %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+
+    <!-- Product List -->
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">SKU: {{ product.sku }}</p>
+                    <p class="card-text formatted-price" data-price="{{ product.price }}">Price: ${{ product.price|floatformat:2 }}</p>
+                    <p class="card-text">Available Stock: {{ product.quantity }}</p>
+                    <p class="card-text">Description: {{ product.description }}</p>
+
+                    <!-- Display Product Image -->
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">  <!-- Display the image -->
+                    {% endif %}
+
+                    <!-- Check and display low stock warning -->
+                    {% if product.quantity == 0 %}
+                        <p class="text-danger">Out of Stock</p>
+                    {% elif product.quantity < 10 %}
+                        <p class="text-danger">Low on stock!</p>
+                    {% endif %}
+
+                    <!-- Product Request Form with Confirmation -->
+                    <form method="POST" action="{% url 'add_product_request' %}" class="request-form" onsubmit="return confirm('Are you sure you want to request this product?');">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_name" value="{{ product.id }}">
+                        <div class="input-group mb-2">
+                            <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required
+                            {% if product.quantity == 0 %} disabled {% endif %}
+                            oninput="updateTotalCost(this, {{ product.price }})">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary request-btn" {% if product.quantity == 0 %} disabled {% endif %} data-stock="{{ product.quantity }}">Add to Request</button>
+                            </div>
+                        </div>
+                        <p class="card-text">Total Cost: $<span class="total-cost">0.00</span></p>
+                    </form>
+
+                    {% if user.is_superuser %}
+                    <div class="mt-3"></div>
+                    <form method="POST" action="{% url 'update_stock' product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <div class="form-group mb-2">
+                            <span class="ml-2">Stock</span>
+                            <input type="number" name="stock_change" class="form-control" min="-{{ product.quantity }}" value="0" required placeholder="Change Stock">
+                        </div>
+                        <button type="submit" class="btn btn-secondary btn-sm">Update Stock</button>
+                    </form>
+                    <form method="POST" action="{% url 'update_product' product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <div class="form-group mb-2">
+                            <span class="ml-2">Name</span>
+                            <input type="text" name="name" class="form-control" value="{{ product.name }}" required placeholder="Name">
+                        </div>
+                        <div class="form-group mb-2">
+                            <span class="ml-2">SKU</span>
+                            <input type="text" name="sku" class="form-control" value="{{ product.sku }}" required placeholder="SKU">
+                        </div>
+                        <div class="form-group mb-2">
+                            <span class="ml-2">Price</span>
+                            <input type="number" name="price" class="form-control" value="{{ product.price }}" min="0.01" step="0.01" required placeholder="Price">
+                        </div>
+                        <div class="form-group mb-2">
+                            <span class="ml-2">Description</span>
+                            <input type="text" name="description" class="form-control" value="{{ product.description }}" placeholder="Description" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning btn-sm">Update</button>
+                    </form>
+                    <form method="POST" action="{% url 'delete_product' product.id %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No products available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function updateTotalCost(input, price) {
+        const quantity = input.value;
+        const totalCostElement = input.closest('form').querySelector('.total-cost');
+        const totalCost = (quantity * price).toFixed(2);
+        totalCostElement.textContent = totalCost;
+
+        // Get the product stock from the data attribute
+        const availableStock = parseInt(input.closest('form').querySelector('.request-btn').dataset.stock, 10);
+
+        // Get the request button
+        const requestButton = input.closest('form').querySelector('.request-btn');
+
+        // Enable/disable the button based on quantity and available stock
+        if (quantity > availableStock) {
+            requestButton.disabled = true;
+        } else {
+            requestButton.disabled = false;
+        }
+    }
+</script>
+
+{% endblock %}

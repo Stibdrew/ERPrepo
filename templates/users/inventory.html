@@ -2,47 +2,57 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container" style="display: flex;">
-        <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
-            <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
-            <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
-
+<div class="container-fluid" style="display: flex; height: 100vh; overflow: hidden;">
+    <!-- Sidebar Navigation -->
+    <div class="side-nav" style="background-color: #222; width: 20%; padding: 20px; color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.5);">
+        <h3 style="color: white; margin-bottom: 30px; text-align: center;">WEB-BASED</h3>
+        <nav style="display: flex; flex-direction: column; gap: 15px;">
+            <a href="{% url 'inventory' %}" class="nav-link" style="color: white; padding: 10px; text-decoration: none; border-radius: 5px; transition: 0.3s;">
+                Inventory
+            </a>
 
             {% if user.is_superuser %}
-        <a class="nav-link active cool-font" aria-current="page" href="{% url 'admin_page' %}">Request Records</a>
-
+            <a href="{% url 'admin_page' %}" class="nav-link" style="color: white; padding: 10px; text-decoration: none; border-radius: 5px; transition: 0.3s;">
+                Request Records
+            </a>
             {% endif %}
-        </div>
+        </nav>
+    </div>
 
     <!-- Main Content -->
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-4">
-        <h2 class="text-center mt-4">Inventory Management Report</h2>
-        <div class="mt-4">
+    <main class="main-content" style="width: 80%; padding: 40px; overflow-y: auto;">
+        <h2 class="text-center" style="color: #ffffff; margin-bottom: 30px;">Inventory Management Report</h2>
+
+        <!-- Real-Time Inventory Overview Section -->
+        <div class="mt-4" style="background-color: #2a2a2e; padding: 20px; border-radius: 10px; color: #f0f0f0;">
             <h4>Real-Time Inventory Overview</h4>
-            <p>Check the latest inventory book in real-time through ECOUNT's inventory management system. The increase and decrease of inventory will be calculated automatically when sales, purchases, or production slips are entered.</p>
-            <ul>
+            <p style="margin-top: 10px;">Check the latest inventory book in real-time through ECOUNT's inventory management system. The increase and decrease of inventory will be calculated automatically when sales, purchases, or production slips are entered.</p>
+            <ul style="margin-top: 10px;">
                 <li>Real-time inventory updates</li>
                 <li>Automatic inventory report generation</li>
                 <li>Reports reflect sales, purchases, and production slips on inventory balance, inventory book, etc.</li>
             </ul>
-            <p>ECOUNT is a web-based system that allows you to view inventory books outside of the work area using a PC, laptop, or mobile device.</p>
+            <p style="margin-top: 10px;">ECOUNT is a web-based system that allows you to view inventory books outside of the work area using a PC, laptop, or mobile device.</p>
         </div>
 
-        <div class="mt-4">
+        <!-- Customizable Reporting Section -->
+        <div class="mt-4" style="background-color: #2a2a2e; padding: 20px; border-radius: 10px; color: #f0f0f0;">
             <h4>Customizable Reporting</h4>
-            <p>Customize the report template by adding fields like item images, available balance, etc. Limit the report template visibility based on user ID.</p>
-            <ul>
+            <p style="margin-top: 10px;">Customize the report template by adding fields like item images, available balance, etc. Limit the report template visibility based on user ID.</p>
+            <ul style="margin-top: 10px;">
                 <li>Add customized fields to the report</li>
                 <li>Automatically send the latest inventory balance report</li>
-                <li>Receive notifications of the inventory status based on specific conditions.</li>
+                <li>Receive notifications of the inventory status based on specific conditions</li>
             </ul>
-            <p>Check the latest inventory quantity to immediately respond to situations and share work progress.</p>
+            <p style="margin-top: 10px;">Check the latest inventory quantity to immediately respond to situations and share work progress.</p>
 
-            <!-- Button to request item -->
-            <button class="btn btn-warning btn-lg mt-3" onclick="confirmRequest()">Request Inventory Report</button>
+            <!-- Request Inventory Report Button -->
+            <button class="btn btn-warning btn-lg mt-3" onclick="confirmRequest()" style="background-color: #f39c12; border: none; color: #ffffff; padding: 10px 20px; border-radius: 5px; transition: 0.3s;">
+                Request Inventory Report
+            </button>
 
             <!-- Request List -->
-            <ul id="request-list" class="list-group mt-3">
+            <ul id="request-list" class="list-group mt-3" style="margin-top: 20px;">
                 <!-- Existing requests will be dynamically added here -->
             </ul>
         </div>
@@ -97,7 +107,5 @@
         }
     }
 </script>
-
-
 
 {% endblock %}

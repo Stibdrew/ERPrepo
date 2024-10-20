@@ -3,79 +3,321 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/main.css' %}">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">  <!-- Include Bootstrap -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="container" style="display: flex;">
-    <div class="side-nav" style="background-color: #222; width: 20%; height: 100vh; padding: 20px; color: white;">
-        <h3 style="color: white; margin-bottom: 30px;">WEB-BASED</h3>
-        <a href="{% url 'inventory' %}" style="display: block; color: white; margin-bottom: 15px;">Inventory</a>
-        <a href="{% url 'view_requested_products' %}" style="display: block; color: white; margin-bottom: 15px;">My Requested Products</a>
-        <a href="{% url 'contact' %}" style="display: block; color: white; margin-bottom: 15px;">Contact Us</a>
-        <a href="{% url 'messages_user' %}" style="display: block; color: white; margin-bottom: 15px;">Messages</a>
-        <a href="{% url 'profile' %}" style="display: block; color: white; margin-bottom: 15px;">My Profile</a>
-        <a href="{% url 'cash_in' %}" style="display: block; color: white; margin-bottom: 15px;">Top Up</a>
+<!-- Custom CSS for Luxurious Black & Gold Design -->
+<style>
+    body {
+        background-color: #1e1e1e;  /* Dark charcoal */
+        font-family: 'Poppins', sans-serif;
+        color: #f5f5f5; /* Soft white for text */
+        transition: background 0.3s, color 0.3s;
+    }
 
+    /* Sidebar Styling */
+    .sidebar {
+        background-color: #000000; /* Pure black */
+        height: 100vh;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding-top: 10px;
+        transition: all 0.3s;
+        overflow-y: auto;
+        border-right: 2px solid #f1c40f; /* Gold border */
+    }
 
+    .sidebar.collapsed {
+        width: 70px;
+    }
 
+    /* Toggle button styling */
+    .toggle-sidebar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: none;
+        border: none;
+        color: #f5f5f5;
+        font-size: 24px;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
 
+    .toggle-sidebar:hover {
+        color: #f1c40f; /* Gold hover effect */
+    }
 
-        <!-- Links to admin functionalities -->
+    .sidebar .nav-link {
+        color: #dcdcdc;
+        padding: 15px 10px;
+        margin: 5px 0;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .sidebar .nav-link i {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: #2c2c2c; /* Charcoal hover */
+        color: #f1c40f; /* Gold hover */
+    }
+
+    .sidebar.collapsed .nav-link span {
+        display: none;
+    }
+
+    .sidebar.collapsed .nav-link i {
+        margin: 0 auto;
+    }
+
+    /* Main Content Styling */
+    .main-content {
+        margin-left: 250px;
+        padding: 30px;
+        transition: margin-left 0.3s;
+    }
+
+    .main-content.collapsed {
+        margin-left: 70px;
+    }
+
+    .content-header h1 {
+        font-size: 2.5em;
+        font-weight: 700;
+        color: #f1c40f; /* Gold */
+        margin-bottom: 10px;
+    }
+
+    .content-header p {
+        font-size: 1.1em;
+        color: #dcdcdc;
+        margin-bottom: 20px;
+    }
+
+    /* Button Styling */
+    .btn-custom {
+        background-color: #f1c40f; /* Gold */
+        color: #000000; /* Black text */
+        border: none;
+        border-radius: 5px;
+        padding: 12px 20px;
+        font-size: 16px;
+        margin: 5px;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-custom:hover {
+        background-color: #d4ac0d; /* Darker gold */
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Card Styling */
+    .card-glass {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card-glass:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Chart Container Styling */
+    .chart-container {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #1e1e1e;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Footer Styling */
+    footer {
+        text-align: center;
+        color: #777;
+        padding: 20px 0;
+        position: fixed;
+        bottom: 0;
+        left: 250px;
+        right: 0;
+        background-color: #000000; /* Black */
+        border-top: 2px solid #f1c40f; /* Gold border */
+    }
+</style>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <button class="toggle-sidebar" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <ul class="nav flex-column" style="margin-top: 50px;">
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'inventory' %}">
+                <i class="fas fa-box"></i> <span>Inventory</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'view_requested_products' %}">
+                <i class="fas fa-shopping-cart"></i> <span>My Requested Products</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'contact' %}">
+                <i class="fas fa-phone-alt"></i> <span>Contact Us</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'messages_user' %}">
+                <i class="fas fa-envelope"></i> <span>Messages</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">
+                <i class="fas fa-user"></i> <span>My Profile</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'cash_in' %}">
+                <i class="fas fa-wallet"></i> <span>Top Up</span>
+            </a>
+        </li>
+
+        <!-- Admin Links -->
         {% if user.is_superuser %}
-                            <a href="{% url 'show_all_users' %}" style="display: block; color: white; margin-bottom: 15px;">Show All Users</a>
-                    <a href="{% url 'admin_page' %}" style="display: block; color: white; margin-bottom: 15px;">Request Records</a>
-                    <a href="{% url 'all_messages' %}" style="display: block; color: white; margin-bottom: 15px;">All Messages</a>
-                <a href="{% url 'manage_credit_memo_requests' %}" style="display: block; color: white; margin-bottom: 15px;">Manage Credit Memo Requests</a>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'show_all_users' %}">
+                    <i class="fas fa-users"></i> <span>Show All Users</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'admin_page' %}">
+                    <i class="fas fa-file-alt"></i> <span>Request Records</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'all_messages' %}">
+                    <i class="fas fa-comments"></i> <span>All Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'manage_credit_memo_requests' %}">
+                    <i class="fas fa-file-invoice"></i> <span>Manage Credit Memo Requests</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_product' %}">
+                    <i class="fas fa-plus-square"></i> <span>Add Product</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'all_product_requests' %}">
+                    <i class="fas fa-tasks"></i> <span>All Product Requests</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
 
+<!-- Main Content -->
+<main class="main-content">
+    <div class="content-header">
+        <h1>Web-based ERP Dashboard</h1>
+        <p class="lead">Manage everything in one place with a streamlined dark theme.</p>
+    </div>
 
-
-            <a href="{% url 'add_product' %}" style="display: block; color: white; margin-bottom: 15px;">Add Product</a>
-            <a href="{% url 'all_product_requests' %}" style="display: block; color: white; margin-bottom: 15px;">All Product Requests</a>
+    <!-- Key Action Buttons -->
+    <div class="d-flex flex-wrap mb-4">
+        {% if approved_requests_count > 0 %}
+            <button class="btn-custom" onclick="location.href='{% url 'requested_inventory' %}'">
+                Show Products
+            </button>
         {% endif %}
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-content" style="width: 80%; padding: 50px;">
-        <h1 style="font-size: 3em; font-weight: bold;">Complete Web-based ERP</h1>
-        <h2 style="font-size: 2em; margin-top: 10px;">Experience Everything</h2>
-        <p style="font-size: 1.2em; margin-top: 20px;">Our web-based ERP solution offers comprehensive tools for Inventory, Production, Sales, Purchasing, Accounting, Payroll, and Collaboration. Join thousands of businesses who trust us to streamline their operations and boost productivity.</p>
-
-        <!-- Button to Approved Requests -->
-        {% if approved_requests_count > 0 %}
-    <button class="btn btn-primary btn-lg" style="margin-bottom: 20px; background-color: #007bff; border: none; border-radius: 5px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: background-color 0.3s, transform 0.3s;"
-            onmouseover="this.style.backgroundColor='#0056b3'; this.style.transform='scale(1.05)';"
-            onmouseout="this.style.backgroundColor='#007bff'; this.style.transform='scale(1)';"
-            onclick="location.href='{% url 'requested_inventory' %}'">
-        Show Products
-    </button>
-{% endif %}
-
-
-        <h2>My Access</h2>
-        <ul class="list-group mb-3"> <!-- Use Bootstrap list group -->
-            {% for request in requests %}
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong class="mr-3">{{ request.item }}</strong>
-                        <span class="text-muted mr-3">{{ request.created_at|date:"Y-m-d H:i:s" }}</span>
-
-                        {% if request.status == "inventory_pending" %}
-                            <span class="badge badge-warning">{{ request.status }}</span>  <!-- Display status as yellow for pending -->
-                        {% elif request.status == "inventory_approved" %}
-                            <span class="badge badge-success">{{ request.status }}</span>  <!-- Display status as green for approved -->
-                        {% elif request.status == "inventory_declined" %}
-                            <span class="badge badge-danger">{{ request.status }}</span>  <!-- Display status as red for declined -->
-                        {% endif %}
-
-                    </div>
-
-                    <!-- Add a form to delete the request -->
-
-                </li>
-            {% empty %}
-                <li class="list-group-item">No requests submitted.</li>
-            {% endfor %}
-        </ul>
-        <p><strong>Request count:</strong> {{ requests.count }}</p> <!-- This line will help you check if requests are being passed -->
+    <!-- Dashboard Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card-glass">
+                <h5>Total Sales</h5>
+                <p class="text-warning">$150,000 <span class="text-muted">(+25%)</span></p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card-glass">
+                <h5>Inventory</h5>
+                <p>500 Units</p>
+            </div>
+        </div>
     </div>
-</div>
+
+    <!-- Dynamic Charts -->
+    <div class="row">
+        <div class="col-md-6 chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div class="col-md-6 chart-container">
+            <canvas id="inventoryChart"></canvas>
+        </div>
+    </div>
+</main>
+
+<!-- Chart.js Script for Dynamic Charts -->
+<script>
+    const salesChart = new Chart(document.getElementById('salesChart').getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+                label: 'Sales',
+                data: [150, 200, 250, 300, 350, 400],
+                borderColor: '#f1c40f', /* Gold line */
+                borderWidth: 2,
+                fill: false
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    const inventoryChart = new Chart(document.getElementById('inventoryChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: ['Product A', 'Product B', 'Product C'],
+            datasets: [{
+                label: 'Stock',
+                data: [100, 150, 80],
+                backgroundColor: ['#f1c40f', '#f1c40f', '#f1c40f'] /* Gold bars */
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.querySelector('.main-content');
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('collapsed');
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 {% endblock %}

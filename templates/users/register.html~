@@ -3,21 +3,75 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <div class="container" style="margin-top: 30px;">
-        <form action="" method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4" style="color: white;">Join Now</legend>
-                {{ form|crispy }}  <!-- This will render all fields, including the new ones -->
-            </fieldset>
-            <div class="form-group" id="signup-button">
-            <button class="btn" style="background-color: #fd5e14; color: white; margin-top: 20px;">Sign Up</button>
-            </div>
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
 
-            <div class="form-group">
-                <small class="text-muted ml-3">Already have an account? <a href="{% url 'login' %}">Sign In</a></small>
-            </div>
-        </form>
+<div class="container" style="margin-top: 50px; max-width: 500px;">
+    <div class="card shadow-sm" style="background: linear-gradient(to bottom, #111, #000); border-radius: 15px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);">
+        <div class="card-body p-4">
+            <form action="" method="POST">
+                {% csrf_token %}
+                <fieldset class="form-group">
+                    <legend class="text-center mb-4" style="color: #FFD700; font-weight: bold; font-size: 1.8rem; letter-spacing: 1px;">Join Now</legend>
+                    {{ form|crispy }}
+                </fieldset>
+                <div class="d-grid">
+                    <!-- Styled button for a more luxurious look -->
+                    <button class="btn btn-primary btn-block" style="background: linear-gradient(to right, #FFD700, #e6ac00); color: black; border: none; border-radius: 30px; padding: 15px 0; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5); transition: transform 0.2s ease;">
+                        Sign Up
+                    </button>
+                </div>
+                <div class="form-group mt-4 text-center">
+                    <small class="text-muted">Already have an account? <a href="{% url 'login' %}" style="color: #FFD700; text-decoration: none; font-weight: 500;">Sign In</a></small>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+
+<style>
+    /* Container styles for a centered layout */
+    .container {
+        animation: fadeIn 1s ease; /* Smooth fade-in animation */
+    }
+
+    /* Form fieldset and legend styling */
+    .form-group legend {
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); /* Subtle glow */
+        animation: glow 2s infinite alternate; /* Glow effect */
+    }
+
+    /* Button hover effect for a richer experience */
+    .btn-primary:hover {
+        background: linear-gradient(to right, #e6ac00, #cc9a00); /* Darker gold */
+        transform: scale(1.05); /* Slight scale on hover */
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6); /* Brighter glow */
+    }
+
+    /* Link hover effect */
+    .form-group a:hover {
+        color: #e6ac00; /* Darker gold on hover */
+        text-decoration: underline;
+    }
+
+    /* Keyframes for animations */
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+        to {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
 {% endblock %}
