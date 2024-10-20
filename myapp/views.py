@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import  UserProfileEditForm
+from .forms import UserProfileEditForm, CashInForm, UserRegisterForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import UserProfile
 from django.contrib.auth.models import User
-from.forms import CashInForm, UserRegisterForm
-
-
 
 
 @login_required
@@ -20,7 +17,7 @@ def cash_in(request):
             card_expiry = form.cleaned_data['card_expiry']
             card_cvv = form.cleaned_data['card_cvv']
 
-            # Simulating a basic credit card validation
+            # Validate credit card details
             if not card_number.isdigit() or len(card_number) != 16:
                 messages.error(request, 'Invalid credit card number.')
             elif len(card_expiry) != 5 or card_expiry[2] != '/':
@@ -28,7 +25,7 @@ def cash_in(request):
             elif not card_cvv.isdigit() or len(card_cvv) != 3:
                 messages.error(request, 'Invalid CVV code.')
             else:
-                # Simulate a successful payment and update the user's balance
+                # Update user's balance
                 user_profile = UserProfile.objects.get(user=request.user)
                 user_profile.balance += amount
                 user_profile.save()
@@ -38,7 +35,9 @@ def cash_in(request):
         form = CashInForm()
 
     return render(request, 'users/cash_in.html', {'form': form})
-@login_required()
+
+
+@login_required
 def terminate_account(request, user_id):
     user = get_object_or_404(User, id=user_id)
     user_profile = get_object_or_404(UserProfile, user=user)
@@ -52,7 +51,7 @@ def terminate_account(request, user_id):
     return render(request, 'inventory/show_all_users.html', {'user': user})
 
 
-@login_required()
+@login_required
 def edit_profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
@@ -67,14 +66,19 @@ def edit_profile(request):
 
     return render(request, 'users/profile.html', {'form': form})
 
+
 def home(request):
     return render(request, 'users/home.html')
+
 
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()  # Save the user first
+            user = form.save(commit=False)  # Save user without committing
+            user.set_password(form.cleaned_data['password'])  # Hash the password
+            user.save()  # Now save the user with hashed password
+
             # Create a UserProfile instance for the newly registered user with the form data
             UserProfile.objects.create(
                 user=user,
@@ -87,12 +91,15 @@ def register(request):
             return redirect('login')  # Redirect to login or another page after registration
     else:
         form = UserRegisterForm()
+
     return render(request, 'users/register.html', {'form': form})
+
 
 def homepage(request):
     return render(request, 'users/homepage.html')
 
-@login_required()
+
+@login_required
 def profile(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
 
@@ -112,8 +119,10 @@ def profile(request):
         'form': form
     })
 
+
 def inventory(request):
     return render(request, 'users/inventory.html')
+
 
 def show_all_users(request):
     users = User.objects.all()
@@ -133,7 +142,6 @@ def show_all_users(request):
             except ValueError:
                 messages.error(request, 'Please enter a valid number for the balance.')
 
-        # Always redirect after processing POST to avoid re-submission issues
         return redirect('show_all_users')
 
     # Render the template for GET requests or after POST redirects
