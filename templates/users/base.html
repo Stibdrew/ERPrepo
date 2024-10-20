@@ -141,25 +141,29 @@
                     {% with user_profile=user.userprofile %}
                         <span class="text-light me-3">Balance: ${{ user_profile.balance }}</span>
                     {% endwith %}
-                    <a href="{% url 'homepage' %}" class="btn btn-primary me-2">Home</a>
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.username }}
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li>
-                                <form method="post" action="{% url 'logout' %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item">Logout</button>
-                                </form>
-                            </li>
-                        </ul>
-                    </div>
+<a href="{% url 'homepage' %}" class="btn" style="background-color: #f1c40f; color: #000000; border-radius: 30px; padding: 5px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">Home</a>
+
+<div class="dropdown">
+    <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: #f1c40f; color: #000000; border-radius: 30px; padding: 5px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
+        {{ user.username }}
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color: #000000; border: 1px solid #f1c40f; border-radius: 10px;">
+        <li><a class="dropdown-item" href="{% url 'profile' %}" style="color: #f1c40f;">Profile</a></li>
+        <li><hr class="dropdown-divider" style="border-top: 1px solid #f1c40f;"></li>
+        <li>
+            <form method="post" action="{% url 'logout' %}" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item" style="color: #f1c40f;">Logout</button>
+            </form>
+        </li>
+    </ul>
+</div>
+
+
                 {% else %}
-                    <a href="{% url 'register' %}" class="btn btn-primary me-2">Create Account</a>
-                    <a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+<a href="{% url 'register' %}" class="btn me-2" style="background-color: #f1c40f; color: #000000; border-radius: 30px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">Create Account</a>
+<a href="{% url 'login' %}" class="btn" style="background-color: #f1c40f; color: #000000; border-radius: 30px; padding: 10px 20px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">Log In</a>
+
                 {% endif %}
             </div>
         </div>

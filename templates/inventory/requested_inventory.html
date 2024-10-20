@@ -40,6 +40,9 @@
                     <p class="card-text">Available Stock: {{ product.quantity }}</p>
                     <p class="card-text">Description: {{ product.description }}</p>
 
+                    <!-- Display Company Name of the User Who Posted the Product -->
+                    <p class="card-text">Posted by: {{ product.company_name }}</p>
+
                     <!-- Display Product Image -->
                     {% if product.image %}
                     <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3" style="border: 1px solid gold;">
@@ -74,6 +77,7 @@
 
                     {% if user.is_superuser %}
                     <div class="mt-3"></div>
+                    <!-- Stock and Product Management for Superuser -->
                     <form method="POST" action="{% url 'update_stock' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <div class="form-group mb-2">

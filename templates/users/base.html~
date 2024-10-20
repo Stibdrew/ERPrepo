@@ -129,13 +129,14 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 {% if user.is_superuser %}
-                    <a class="nav-link active" href="#">Homepage Admin</a>
+                    <a class="nav-link active" href="{% url 'homepage' %}">Homepage Admin</a>
                 {% else %}
-                    <a class="nav-link active" href="#">Homepage</a>
+                    <a class="nav-link active" href="{% url 'homepage' %}">Homepage</a>
                 {% endif %}
             </div>
 
 
+            <div class="d-flex align-items-center ms-auto" id="authstyle">
                 {% if user.is_authenticated %}
                     {% with user_profile=user.userprofile %}
                         <span class="text-light me-3">Balance: ${{ user_profile.balance }}</span>

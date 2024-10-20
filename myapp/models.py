@@ -8,7 +8,7 @@ class UserProfile(models.Model):
     full_name = models.CharField(max_length=255)
     mobile_number = models.CharField(max_length=15)
     business_title = models.CharField(max_length=255)
-    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Add this line
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
         return self.full_name

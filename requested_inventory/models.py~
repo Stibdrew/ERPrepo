@@ -4,16 +4,15 @@ from django.conf import settings
 
 class Product(models.Model):
     name = models.CharField(max_length=255)
-    sku = models.CharField(max_length=100)
+    sku = models.CharField(max_length=50)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
+    quantity = models.IntegerField()
     image = models.ImageField(upload_to='products/', blank=True, null=True)
-    company_name = models.CharField(max_length=255, default="Unknown Company")  # Set a default value
+    company_name = models.CharField(max_length=255)  # Add this field for company name
 
     def __str__(self):
         return self.name
-
 
 class ProductRequest(models.Model):
     STATUS_CHOICES = [

@@ -13,9 +13,13 @@
     <div class="hero-text text-center text-white animate__animated animate__fadeInDown" style="z-index: 1;">
         <h1 style="font-family: 'Raleway', sans-serif; font-size: 4rem; font-weight: bold;">ERP, Reimagined</h1>
         <p class="lead mt-4" style="font-size: 1.5rem; font-family: 'Poppins', sans-serif;">Built for speed. Made to scale. Designed to impress.</p>
-        <a href="#get-started" class="btn btn-explode mt-5 px-5 py-3 pulse-effect"
-           style="background-color: #ffffff; color: #333; font-size: 1.2rem; font-weight: bold; border-radius: 30px; transition: background-color 0.3s;"
-           onmouseover="this.style.backgroundColor='#f1f1f1';" onmouseout="this.style.backgroundColor='#ffffff';">Get Started Now</a>
+  <a href="{% if user.is_authenticated %}{% url 'homepage' %}{% else %}{% url 'register' %}{% endif %}"
+   class="btn btn-explode mt-5 px-5 py-3 pulse-effect"
+   style="background-color: #ffffff; color: #333; font-size: 1.2rem; font-weight: bold; border-radius: 30px; transition: background-color 0.3s;"
+   onmouseover="this.style.backgroundColor='#f1f1f1';" onmouseout="this.style.backgroundColor='#ffffff';">
+   Get Started Now
+</a>
+
     </div>
 </div>
 

@@ -1,15 +1,18 @@
 {% extends 'users/base.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4 text-center text-primary">All Products</h2>
+<div class="container mt-5" style="color: gold;">
+    <h2 class="mb-4 text-center" style="color: gold; text-shadow: 1px 1px 2px black;">All Products</h2>
 
     <!-- Search Bar -->
     <form method="GET" action="{% url 'search_products' %}" class="mb-4">
         <div class="input-group">
-            <input type="text" name="query" class="form-control" placeholder="Search for products..." value="{{ query }}">
+            <input type="text" name="query" class="form-control" placeholder="Search for products..." value="{{ query }}"
+                   style="background-color: black; color: gold; border: 1px solid gold;">
             <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Search</button>
+                <button class="btn" type="submit" style="background-color: gold; color: black; border: 1px solid gold;">
+                    Search
+                </button>
             </div>
         </div>
     </form>
@@ -18,7 +21,9 @@
     {% if messages %}
     {% for message in messages %}
         {% if 'stock_update' in message.tags %}
-            <div class="alert alert-success">{{ message }}</div>
+            <div class="alert alert-success" style="background-color: black; color: gold; border: 1px solid gold;">
+                {{ message }}
+            </div>
         {% endif %}
     {% endfor %}
     {% endif %}
@@ -27,24 +32,27 @@
     <div class="row">
         {% for product in products %}
         <div class="col-md-4 mb-4">
-            <div class="card">
+            <div class="card" style="background-color: black; border: 1px solid gold;">
                 <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
+                    <h5 class="card-title" style="color: gold;">{{ product.name }}</h5>
                     <p class="card-text">SKU: {{ product.sku }}</p>
                     <p class="card-text formatted-price" data-price="{{ product.price }}">Price: ${{ product.price|floatformat:2 }}</p>
                     <p class="card-text">Available Stock: {{ product.quantity }}</p>
                     <p class="card-text">Description: {{ product.description }}</p>
 
+                    <!-- Display Company Name of the User Who Posted the Product -->
+                    <p class="card-text">Posted by: {{ product.user.userprofile.company_name }}</p>
+
                     <!-- Display Product Image -->
                     {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3">  <!-- Display the image -->
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid mb-3" style="border: 1px solid gold;">
                     {% endif %}
 
                     <!-- Check and display low stock warning -->
                     {% if product.quantity == 0 %}
-                        <p class="text-danger">Out of Stock</p>
+                        <p class="text-danger" style="color: red;">Out of Stock</p>
                     {% elif product.quantity < 10 %}
-                        <p class="text-danger">Low on stock!</p>
+                        <p class="text-danger" style="color: red;">Low on stock!</p>
                     {% endif %}
 
                     <!-- Product Request Form with Confirmation -->
@@ -53,10 +61,15 @@
                         <input type="hidden" name="product_name" value="{{ product.id }}">
                         <div class="input-group mb-2">
                             <input type="number" name="quantity" class="form-control quantity-input" data-price="{{ product.price }}" min="1" value="1" required
+                            style="background-color: black; color: gold; border: 1px solid gold;"
                             {% if product.quantity == 0 %} disabled {% endif %}
                             oninput="updateTotalCost(this, {{ product.price }})">
                             <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary request-btn" {% if product.quantity == 0 %} disabled {% endif %} data-stock="{{ product.quantity }}">Add to Request</button>
+                                <button type="submit" class="btn"
+                                        style="background-color: gold; color: black; border: 1px solid gold;"
+                                        {% if product.quantity == 0 %} disabled {% endif %} data-stock="{{ product.quantity }}">
+                                    Add to Request
+                                </button>
                             </div>
                         </div>
                         <p class="card-text">Total Cost: $<span class="total-cost">0.00</span></p>
@@ -64,44 +77,56 @@
 
                     {% if user.is_superuser %}
                     <div class="mt-3"></div>
+                    <!-- Stock and Product Management for Superuser -->
                     <form method="POST" action="{% url 'update_stock' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <div class="form-group mb-2">
-                            <span class="ml-2">Stock</span>
-                            <input type="number" name="stock_change" class="form-control" min="-{{ product.quantity }}" value="0" required placeholder="Change Stock">
+                            <span class="ml-2" style="color: gold;">Stock</span>
+                            <input type="number" name="stock_change" class="form-control" min="-{{ product.quantity }}" value="0" required placeholder="Change Stock"
+                                   style="background-color: black; color: gold; border: 1px solid gold;">
                         </div>
-                        <button type="submit" class="btn btn-secondary btn-sm">Update Stock</button>
+                        <button type="submit" class="btn btn-sm" style="background-color: gold; color: black; border: 1px solid gold;">
+                            Update Stock
+                        </button>
                     </form>
                     <form method="POST" action="{% url 'update_product' product.id %}" class="d-inline">
                         {% csrf_token %}
                         <div class="form-group mb-2">
-                            <span class="ml-2">Name</span>
-                            <input type="text" name="name" class="form-control" value="{{ product.name }}" required placeholder="Name">
+                            <span class="ml-2" style="color: gold;">Name</span>
+                            <input type="text" name="name" class="form-control" value="{{ product.name }}" required placeholder="Name"
+                                   style="background-color: black; color: gold; border: 1px solid gold;">
                         </div>
                         <div class="form-group mb-2">
-                            <span class="ml-2">SKU</span>
-                            <input type="text" name="sku" class="form-control" value="{{ product.sku }}" required placeholder="SKU">
+                            <span class="ml-2" style="color: gold;">SKU</span>
+                            <input type="text" name="sku" class="form-control" value="{{ product.sku }}" required placeholder="SKU"
+                                   style="background-color: black; color: gold; border: 1px solid gold;">
                         </div>
                         <div class="form-group mb-2">
-                            <span class="ml-2">Price</span>
-                            <input type="number" name="price" class="form-control" value="{{ product.price }}" min="0.01" step="0.01" required placeholder="Price">
+                            <span class="ml-2" style="color: gold;">Price</span>
+                            <input type="number" name="price" class="form-control" value="{{ product.price }}" min="0.01" step="0.01" required placeholder="Price"
+                                   style="background-color: black; color: gold; border: 1px solid gold;">
                         </div>
                         <div class="form-group mb-2">
-                            <span class="ml-2">Description</span>
-                            <input type="text" name="description" class="form-control" value="{{ product.description }}" placeholder="Description" required>
+                            <span class="ml-2" style="color: gold;">Description</span>
+                            <input type="text" name="description" class="form-control" value="{{ product.description }}" placeholder="Description" required
+                                   style="background-color: black; color: gold; border: 1px solid gold;">
                         </div>
-                        <button type="submit" class="btn btn-warning btn-sm">Update</button>
+                        <button type="submit" class="btn btn-sm" style="background-color: gold; color: black; border: 1px solid gold;">
+                            Update
+                        </button>
                     </form>
                     <form method="POST" action="{% url 'delete_product' product.id %}" class="d-inline">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        <button type="submit" class="btn btn-sm" style="background-color: red; color: white; border: 1px solid red;">
+                            Delete
+                        </button>
                     </form>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% empty %}
-        <p class="text-center">No products available.</p>
+        <p class="text-center" style="color: gold;">No products available.</p>
         {% endfor %}
     </div>
 </div>
