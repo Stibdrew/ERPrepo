@@ -22,7 +22,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-6w&-+6lb5%294_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'  # Use environment variable
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')  # Use environment variable
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = ['.herokuapp.com']# Use environment variable
 
 # Application definition
 INSTALLED_APPS = [
@@ -79,6 +80,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
