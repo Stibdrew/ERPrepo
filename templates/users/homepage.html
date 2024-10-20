@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+
 <!-- Custom CSS for Luxurious Black & Gold Design -->
 <style>
     body {
@@ -163,78 +164,7 @@
 </style>
 
 <!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-    <button class="toggle-sidebar" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
 
-    <ul class="nav flex-column" style="margin-top: 50px;">
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'inventory' %}">
-                <i class="fas fa-box"></i> <span>Inventory</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'view_requested_products' %}">
-                <i class="fas fa-shopping-cart"></i> <span>My Requested Products</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact' %}">
-                <i class="fas fa-phone-alt"></i> <span>Contact Us</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'messages_user' %}">
-                <i class="fas fa-envelope"></i> <span>Messages</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'profile' %}">
-                <i class="fas fa-user"></i> <span>My Profile</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'cash_in' %}">
-                <i class="fas fa-wallet"></i> <span>Top Up</span>
-            </a>
-        </li>
-
-        <!-- Admin Links -->
-        {% if user.is_superuser %}
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'show_all_users' %}">
-                    <i class="fas fa-users"></i> <span>Show All Users</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'admin_page' %}">
-                    <i class="fas fa-file-alt"></i> <span>Request Records</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'all_messages' %}">
-                    <i class="fas fa-comments"></i> <span>All Messages</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'manage_credit_memo_requests' %}">
-                    <i class="fas fa-file-invoice"></i> <span>Manage Credit Memo Requests</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'add_product' %}">
-                    <i class="fas fa-plus-square"></i> <span>Add Product</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'all_product_requests' %}">
-                    <i class="fas fa-tasks"></i> <span>All Product Requests</span>
-                </a>
-            </li>
-        {% endif %}
-    </ul>
-</div>
 
 <!-- Main Content -->
 <main class="main-content">

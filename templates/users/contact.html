@@ -2,163 +2,30 @@
 {% load static %}
 
 {% block content %}
-<!-- Add Font Awesome CSS for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<div class="container mt-5">
+    <div class="container" style="display: flex;">
 
-<style>
-    body {
-        background-color: #121212; /* Dark background */
-        color: white; /* White text for readability */
-        font-family: 'Poppins', sans-serif; /* Modern font */
-        overflow-x: hidden; /* Prevent horizontal scrolling */
-    }
 
-    .container {
-        margin-top: 70px; /* Space for the fixed header */
-        display: flex;
-        justify-content: flex-end; /* Align content to the right */
-    }
-
-    .side-nav {
-        background: #2c3e50; /* Dark sidebar background */
-        width: 220px;
-        height: 100vh;
-        padding: 20px;
-        color: white;
-        position: fixed; /* Keep it fixed on the left */
-        top: 0;
-        left: 0;
-        overflow-y: auto; /* Allow scrolling if content overflows */
-        z-index: 1; /* Behind the header */
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
-    }
-
-    .side-nav h3 {
-        color: #1abc9c; /* Turquoise for header */
-        margin-bottom: 30px;
-        font-size: 1.6em;
-        letter-spacing: 1px;
-        font-weight: bold;
-        text-align: center;
-    }
-
-    .side-nav a {
-        display: flex;
-        align-items: center;
-        color: white;
-        margin-bottom: 20px;
-        text-decoration: none;
-        font-size: 1.1em;
-        padding: 10px;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .side-nav a:hover {
-        text-decoration: underline;
-        color: #1abc9c; /* Turquoise */
-        background-color: #1c1c1c; /* Darker hover effect */
-    }
-
-    .side-nav a i {
-        margin-right: 10px;
-    }
-
-    .content {
-        margin-left: 240px; /* Shift content to the right of the sidebar */
-        padding: 40px;
-        width: calc(100% - 240px); /* Adjust width to accommodate sidebar */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    h2 {
-        font-size: 2em;
-        color: #3498db; /* Bright blue for headers */
-        text-align: center;
-        margin-bottom: 30px;
-        font-weight: bold;
-    }
-
-    form {
-        background: #ffffff; /* Solid white for form */
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-        width: 70%; /* Adjust width to make it centered */
-        transition: transform 0.3s ease;
-    }
-
-    form:hover {
-        transform: translateY(-5px); /* Small lift effect on hover */
-    }
-
-    .btn-primary {
-        background-color: #1abc9c; /* Turquoise for 'Send Message' */
-        border-color: #1abc9c;
-        padding: 10px 20px;
-        font-size: 1.1em;
-        border-radius: 50px; /* Rounded button */
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        background-color: #16a085; /* Darker turquoise for hover */
-        transform: scale(1.05); /* Slight growth effect */
-    }
-
-    .form-label {
-        color: #222; /* Darker text for form labels */
-        font-weight: bold;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        padding: 10px;
-        font-size: 1em;
-        margin-bottom: 15px;
-    }
-</style>
-
-<div class="container">
-    <div class="side-nav">
-        <h3>WEB-BASED</h3>
-        <a href="{% url 'inventory' %}"><i class="fas fa-boxes"></i> Inventory</a>
-        {% if user.is_superuser %}
-            <a href="{% url 'admin_page' %}"><i class="fas fa-clipboard-list"></i> Request Records</a>
-            <a href="{% url 'all_messages' %}"><i class="fas fa-envelope"></i> All Messages</a>
-        {% endif %}
-    </div>
-
-    <div class="content">
-        <h2>Contact Us</h2>
-        <form method="post" class="needs-validation" novalidate>
-            {% csrf_token %}
-            <div class="mb-3">
-                <label for="subject" class="form-label">Subject</label>
-                <input type="text" id="subject" name="subject" class="form-control" required>
-                <div class="invalid-feedback">
-                    Please enter a subject.
+        <div style="margin-left: 20px; flex-grow: 1;">  <!-- Added a wrapper for proper layout -->
+            <h2>Contact Us</h2>
+            <form method="post" class="needs-validation" enctype="multipart/form-data" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="content" class="form-label">{{ form.content.label }}</label>
+                    {{ form.content }}  <!-- Render the content field -->
+                    <div class="invalid-feedback">
+                        Please enter your message.
+                    </div>
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" name="email" class="form-control" required>
-                <div class="invalid-feedback">
-                    Please enter a valid email address.
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload an image (optional):</label>
+                    <input type="file" name="image" accept="image/*" class="form-control"> <!-- Image upload input -->
                 </div>
-            </div>
-            <div class="mb-3">
-                <label for="message" class="form-label">Message</label>
-                <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
-                <div class="invalid-feedback">
-                    Please enter your message.
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Send Message</button>
-        </form>
+
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}

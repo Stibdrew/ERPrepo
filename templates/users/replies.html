@@ -4,69 +4,51 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/main.css' %}">
+<div class="container" style="display: flex;">
 
-<div class="container" style="display: flex; height: 100vh; overflow: hidden;">
-    <!-- Sidebar Navigation -->
-    <div class="side-nav" style="background-color: #222; width: 20%; padding: 20px; color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.5);">
-        <h3 style="color: white; margin-bottom: 30px; text-align: center;">WEB-BASED</h3>
-        <nav style="display: flex; flex-direction: column; gap: 15px;">
-            <a href="{% url 'inventory' %}" class="nav-link" style="color: white; padding: 10px; text-decoration: none; border-radius: 5px; transition: 0.3s;">
-                Inventory
-            </a>
 
-            <!-- Superuser Links -->
-            {% if user.is_superuser %}
-            <a href="{% url 'admin_page' %}" class="nav-link" style="color: white; padding: 10px; text-decoration: none; border-radius: 5px; transition: 0.3s;">
-                Request Records
-            </a>
-            <a href="{% url 'all_messages' %}" class="nav-link" style="color: white; padding: 10px; text-decoration: none; border-radius: 5px; transition: 0.3s;">
-                All Messages
-            </a>
-            {% endif %}
-        </nav>
-    </div>
-
-    <!-- Main Content Area -->
-    <div class="main-content" style="width: 80%; padding: 50px; overflow-y: auto;">
-        <h2 style="color: #ffffff; margin-bottom: 30px;">My Messages and Replies</h2>
-
+    <div class="main-content" style="width: 80%; padding: 50px;"> <!-- Add main content div -->
+        <h2>My Messages and Replies</h2>
         {% if message_replies %}
-            <ul class="list-group" style="margin-bottom: 20px;">
+            <ul class="list-group">
                 {% for message, replies in message_replies.items %}
-                <li class="list-group-item" style="background-color: #2a2a2e; color: #f0f0f0; margin-bottom: 15px; padding: 20px; border: none; border-radius: 5px;">
-                    <p style="font-size: 1rem; margin-bottom: 5px;">
-                        <strong>Message:</strong> {{ message.content }}
-                    </p>
-                    <p style="font-size: 0.9rem; color: #a0a0a0; margin-bottom: 10px;">
-                        <strong>Sent on:</strong> {{ message.created_at|date:"M d, Y, H:i" }}
-                    </p>
+                <li class="list-group-item">
+                    <strong>Message:</strong> {{ message.content }}<br>
+                    <strong>Sent on:</strong> {{ message.created_at|date:"M d, Y, H:i" }}<br>
 
-                    <!-- Replies Section -->
-                    <div style="margin-top: 10px; padding: 10px; background-color: #333; border-radius: 5px;">
-                        <p style="color: #ffffff; margin-bottom: 10px;"><strong>Replies:</strong></p>
-                        <ul style="list-style-type: none; padding: 0;">
-                            {% for reply in replies %}
-                            <li style="margin-bottom: 10px; padding: 10px; background-color: #444; border-radius: 5px;">
-                                <p style="margin: 0; color: #f0f0f0;">
-                                    <strong>Replied by:</strong> {{ reply.user.username }}
-                                </p>
-                                <p style="margin: 5px 0; color: #f0f0f0;">
-                                    <strong>Reply:</strong> {{ reply.content }}
-                                </p>
-                                <p style="margin: 0; color: #a0a0a0;">
-                                    <strong>Replied on:</strong> {{ reply.created_at|date:"M d, Y, H:i" }}
-                                </p>
-                            </li>
-                            {% empty %}
-                            <li style="color: #a0a0a0;">No replies yet.</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    <!-- Check if the message has an image -->
+                    {% if message.image %}
+                        <div class="mt-2">
+                            <strong>Image:</strong><br>
+                            <img src="{{ message.image.url }}" alt="Message Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                        </div>
+                    {% endif %}
+
+                    <strong>Replies:</strong>
+                    <ul>
+                        {% for reply in replies %}
+                        <li>
+                            <strong>Replied by:</strong> {{ reply.user.username }}<br>
+                            <strong>Reply:</strong> {{ reply.content }}<br>
+                            <strong>Replied on:</strong> {{ reply.created_at|date:"M d, Y, H:i" }}<br>
+
+                            <!-- Check if the reply has an image -->
+                            {% if reply.image %}
+                                <div class="mt-2">
+                                    <strong>Image:</strong><br>
+                                    <img src="{{ reply.image.url }}" alt="Reply Image" class="img-fluid" style="max-height: 200px; max-width: 100%; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                        </li>
+                        {% empty %}
+                        <li>No replies yet.</li>
+                        {% endfor %}
+                    </ul>
                 </li>
                 {% endfor %}
             </ul>
         {% else %}
-            <p style="color: #a0a0a0;">No messages found.</p>
+            <p>No messages found.</p>
         {% endif %}
     </div> <!-- End of main content div -->
 </div>

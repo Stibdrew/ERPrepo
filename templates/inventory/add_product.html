@@ -1,73 +1,88 @@
 {% extends 'users/base.html' %}
+{% load static %}
 
 {% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-light">Add New Product</h2>
+
+    <!-- Success/Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="atm-card">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-block">Add Product</button>
+        </form>
+        <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Inventory</a>
+    </div>
+</div>
+
 <style>
-    /* Enhanced Black and Gold theme styling */
+    /* General body styling */
     body {
-        background-color: #000; /* Black background */
-        color: #f1c40f; /* Gold text color */
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Sleek font */
+        background-color: #343a40; /* Dark background */
+        color: #f1c40f; /* Gold color for text */
     }
 
-    .container {
-        background-color: #111; /* Slightly lighter black */
+    /* Card styling */
+    .atm-card {
+        max-width: 600px; /* Increased width */
+        margin: 0 auto;
         padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 0 20px rgba(241, 196, 15, 0.7); /* Softer gold shadow */
-        max-width: 600px;
-        margin: auto;
+        border-radius: 15px;
+        background: linear-gradient(145deg, #444d56, #353b43);
+        box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px; /* Spacing above the card */
     }
 
     h2 {
-        color: #f1c40f;
-        font-size: 28px;
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 20px;
+        color: #f1c40f; /* Gold color for heading */
     }
 
-    form {
-        margin-top: 20px;
+    .alert {
+        margin-bottom: 20px; /* Spacing below alerts */
     }
 
-    form input[type="text"],
-    form input[type="file"],
-    form select,
-    form textarea {
-        background-color: #222; /* Darker input background */
-        color: #f1c40f;
-        border: 2px solid #f1c40f; /* Gold border */
+    /* Form control styling */
+    .form-control {
+        width: 100%; /* Ensure full width */
+        height: 50px; /* Increased height for visibility */
+        font-size: 1rem; /* Standard font size */
         border-radius: 5px;
-        padding: 10px;
-        width: 100%;
-        margin-bottom: 15px;
-        box-sizing: border-box;
+        border: 2px solid #f1c40f; /* Gold border */
+        padding: 0 10px;
+        background-color: #222; /* Dark input background */
+        color: #f1c40f; /* Gold text color */
         transition: border-color 0.3s, background-color 0.3s;
     }
 
-    form input:focus,
-    form select:focus,
-    form textarea:focus {
+    .form-control:focus {
         border-color: #d4ac0d; /* Darker gold on focus */
         background-color: #333; /* Slightly lighter black */
     }
 
-    .btn-primary {
-        background-color: #f1c40f; /* Gold */
-        border-color: #f1c40f;
-        color: #000;
+    /* Button styling */
+    .btn-block {
         width: 100%;
-        padding: 12px;
+        background-color: #f1c40f; /* Gold color for button */
+        border: none;
         border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
         transition: background-color 0.3s, transform 0.2s;
+        color: #000; /* Text color for button */
+        padding: 12px; /* Added padding */
+        font-size: 16px; /* Font size */
+        font-weight: bold; /* Font weight */
     }
 
-    .btn-primary:hover {
-        background-color: #d4ac0d; /* Darker gold */
-        border-color: #d4ac0d;
-        transform: translateY(-3px); /* Slight upward lift on hover */
+    .btn-block:hover {
+        background-color: #d4ac0d; /* Darker gold on hover */
     }
 
     .btn-secondary {
@@ -80,7 +95,6 @@
         margin-top: 10px;
         display: block;
         text-align: center;
-        width: 100%;
         transition: background-color 0.3s, color 0.3s;
     }
 
@@ -88,19 +102,6 @@
         background-color: #444; /* Slightly lighter grey */
         color: #f7d78d; /* Light gold */
     }
-
-    a {
-        text-decoration: none;
-    }
 </style>
 
-<div class="container mt-5">
-    <h2>Add New Product</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Add Product</button>
-    </form>
-    <a href="{% url 'homepage' %}" class="btn btn-secondary">Back to Inventory</a>
-</div>
 {% endblock %}
